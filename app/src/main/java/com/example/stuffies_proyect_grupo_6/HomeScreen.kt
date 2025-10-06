@@ -101,7 +101,7 @@ fun HomeScreen(
                             color = Color(0xFFECFEFF),
                             fontSize = 13.sp
                         )
-                    } 
+                    }
                     Button(
                         onClick = onVerProductos,
                         shape = RoundedCornerShape(16.dp)
