@@ -18,6 +18,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import android.os.Build
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 
 @Composable
 fun HomeScreen(
@@ -39,13 +49,30 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
+            val context = LocalContext.current
+            val imageLoader = remember {
+                ImageLoader.Builder(context).components {
+                    if (Build.VERSION.SDK_INT >= 28) add(ImageDecoderDecoder.Factory()) // WebP/GIF animado
+                    else add(GifDecoder.Factory())
+                }.build()
+            }
             // Placeholder cuadrado donde iría el GIF
             Box(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0xFF8B5CF6)) // moradito
-            )
+                    .background(Color(0xFF8B5CF6)),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = R.drawable.stuffies_anim,
+                    imageLoader = imageLoader,
+                    contentDescription = "Logo animado",
+                    modifier = Modifier.matchParentSize(),
+                    contentScale = ContentScale.Fit
+                )
+            }
 
             Spacer(Modifier.width(10.dp))
 
