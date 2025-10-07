@@ -28,7 +28,10 @@ import com.example.stuffies_proyect_grupo_6.R
 @Composable
 fun HomeMedium(
     onVerProductos: () -> Unit = {},
-    onIrContacto: () -> Unit = {}
+    onIrContacto: () -> Unit = {},
+    // 👇 agrega estos dos para navegar según la guía 10
+    onGoProfile: () -> Unit = {},
+    onGoSettings: () -> Unit = {}
 ) {
     val bg = Brush.verticalGradient(listOf(Color(0xFF111827), Color(0xFF1F2937)))
 
@@ -211,6 +214,12 @@ fun HomeMedium(
                 }
             }
 
+            Spacer(Modifier.height(16.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedButton(onClick = onGoProfile) { Text("Ir a Perfil") }
+                Button(onClick = onGoSettings) { Text("Ir a Ajustes") }
+            }
+
             Spacer(Modifier.height(8.dp))
             Text(
                 "© 2025 Stuffies — Grupo 6",
@@ -226,3 +235,4 @@ fun HomeMedium(
 @Preview(showBackground = true, widthDp = 800, heightDp = 480)
 @Composable
 fun PreviewHomeMedium() { HomeMedium() }
+

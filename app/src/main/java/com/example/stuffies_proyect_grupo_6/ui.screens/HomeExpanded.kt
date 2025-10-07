@@ -28,7 +28,10 @@ import com.example.stuffies_proyect_grupo_6.R
 @Composable
 fun HomeExpanded(
     onVerProductos: () -> Unit = {},
-    onIrContacto: () -> Unit = {}
+    onIrContacto: () -> Unit = {},
+    // 👇 agrega estos dos para navegar según la guía 10
+    onGoProfile: () -> Unit = {},
+    onGoSettings: () -> Unit = {}
 ) {
     val bg = Brush.verticalGradient(listOf(Color(0xFF111827), Color(0xFF1F2937)))
 
@@ -187,6 +190,12 @@ fun HomeExpanded(
                             Text("Contacto")
                         }
                     }
+                }
+
+                Spacer(Modifier.height(16.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedButton(onClick = onGoProfile) { Text("Ir a Perfil") }
+                    Button(onClick = onGoSettings) { Text("Ir a Ajustes") }
                 }
 
                 Spacer(Modifier.height(8.dp))
