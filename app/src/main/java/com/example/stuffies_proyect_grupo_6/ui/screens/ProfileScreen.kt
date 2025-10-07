@@ -1,4 +1,5 @@
-package com.example.stuffies_proyect_grupo_6.ui.screens.ui
+package com.example.stuffies_proyect_grupo_6.ui.screens
+
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
