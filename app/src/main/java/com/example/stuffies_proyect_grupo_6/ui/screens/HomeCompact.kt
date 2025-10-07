@@ -1,4 +1,4 @@
-package com.example.stuffies_proyect_grupo_6.ui.screens
+package com.example.stuffies_proyect_grupo_6.ui.screens.ui
 
 import android.os.Build
 import androidx.compose.foundation.background
@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.ImageLoader
@@ -232,6 +233,6 @@ fun HomeCompact(
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(showBackground = true, widthDp = 360, heightDp = 640)
+@Preview(showBackground = true, widthDp = 360, heightDp = 640)
 @Composable
 fun PreviewHomeCompact() { HomeCompact() }

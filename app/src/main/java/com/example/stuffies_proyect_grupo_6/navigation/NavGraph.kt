@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.stuffies_proyect_grupo_6.ui.screens.*
+import com.example.stuffies_proyect_grupo_6.ui.screens.ui.HomeAdaptive
+import com.example.stuffies_proyect_grupo_6.ui.screens.ui.ProfileScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.ui.SettingsScreen
 import com.example.stuffies_proyect_grupo_6.utils.appWindowSizeClass
 
 @Composable

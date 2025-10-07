@@ -1,4 +1,4 @@
-package com.example.stuffies_proyect_grupo_6.ui.screens
+package com.example.stuffies_proyect_grupo_6.ui.screens.ui
 
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
