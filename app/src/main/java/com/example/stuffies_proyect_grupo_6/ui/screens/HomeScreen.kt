@@ -28,6 +28,9 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+
 
 @Composable
 fun HomeScreen(
@@ -92,17 +95,12 @@ private fun HomeHeader(
     onIrPerfil: () -> Unit
 ) {
     val context = LocalContext.current
-    // loader con soporte para GIFs animados
     val imageLoader = remember {
-        coil.ImageLoader.Builder(context)
+        ImageLoader.Builder(context)
             .components {
-                if (Build.VERSION.SDK_INT >= 28) {
-                    add(coil.decode.ImageDecoderDecoder.Factory())
-                } else {
-                    add(coil.decode.GifDecoder.Factory())
-                }
-            }
-            .build()
+                if (Build.VERSION.SDK_INT >= 28) add(ImageDecoderDecoder.Factory())
+                else add(GifDecoder.Factory())
+            }.build()
     }
 
     Surface(color = Color.Transparent) {
@@ -113,51 +111,44 @@ private fun HomeHeader(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // 🔹 Logo con GIF animado
+
+            // Logo + nombre
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AsyncImage(
                     model = "https://i.postimg.cc/Hs1Q5cQB/output-onlinegiftools-1.gif",
                     imageLoader = imageLoader,
                     contentDescription = "Logo animado Stuffies",
-                    modifier = Modifier
-                        .size(34.dp)
-                        .clip(RoundedCornerShape(8.dp)),
+                    modifier = Modifier.size(34.dp).clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
                 )
                 Spacer(Modifier.width(10.dp))
-                Text(
-                    "STUFFIES",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                )
+                Text("STUFFIES", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
             }
 
-            // 🔹 Botones del header
+            // Nav + cuenta (scroll horizontal para que no se corte "Nosotros")
             Row(verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = onIrProductos) { Text("Productos", color = Color(0xFFB9B9D6)) }
-                TextButton(onClick = onIrBlogs) { Text("Blogs", color = Color(0xFFB9B9D6)) }
-                TextButton(onClick = onIrNosotros) { Text("Nosotros", color = Color(0xFFB9B9D6)) }
-                TextButton(onClick = onIrContacto) { Text("Contacto", color = Color(0xFFB9B9D6)) }
+
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextButton(onClick = onIrProductos) { Text("Productos", color = Color(0xFFB9B9D6)) }
+                    TextButton(onClick = onIrBlogs)     { Text("Blogs",     color = Color(0xFFB9B9D6)) }
+                    TextButton(onClick = onIrNosotros)  { Text("Nosotros",  color = Color(0xFFB9B9D6)) }
+                    
+                    TextButton(onClick = onIrLogin)     { Text("Inicio sesión", color = Color(0xFFB9B9D6)) }
+
+                    TextButton(onClick = onIrContacto)  { Text("Contacto",  color = Color(0xFFB9B9D6)) }
+                }
 
                 Spacer(Modifier.width(6.dp))
                 AssistChip(
                     onClick = onIrCarrito,
                     label = { Text("🛒", color = Color.White, fontSize = 12.sp) },
                     shape = RoundedCornerShape(50),
-                    colors = AssistChipDefaults.assistChipColors(
-                        containerColor = Color(0xFF1E2339)
-                    )
+                    colors = AssistChipDefaults.assistChipColors(containerColor = Color(0xFF1E2339))
                 )
-                Spacer(Modifier.width(8.dp))
-                FilledTonalButton(
-                    onClick = onIrLogin,
-                    shape = RoundedCornerShape(10.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color(0xFF1E2339),
-                        contentColor = Color(0xFFB9B9D6)
-                    )
-                ) { Text("Iniciar sesión") }
+
                 Spacer(Modifier.width(8.dp))
                 Box(
                     modifier = Modifier
@@ -170,6 +161,7 @@ private fun HomeHeader(
         }
     }
 }
+
 
 
 @Composable
