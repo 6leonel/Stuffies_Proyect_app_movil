@@ -1,0 +1,423 @@
+package com.example.stuffies_proyect_grupo_6.ui.screens
+
+import android.os.Build
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+@Composable
+fun HomeScreen(
+    onIrProductos: () -> Unit,
+    onIrBlogs: () -> Unit,
+    onIrNosotros: () -> Unit,
+    onIrContacto: () -> Unit,
+    onIrCarrito: () -> Unit,
+    onIrLogin: () -> Unit,
+    onIrPerfil: () -> Unit
+) {
+    // Fondo negro
+    val fondo = Brush.verticalGradient(
+        colorStops = arrayOf(0f to Color.Black, 1f to Color.Black)
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(fondo)
+            .padding(bottom = 8.dp)
+    ) {
+        HomeHeader(
+            onIrProductos = onIrProductos,
+            onIrBlogs = onIrBlogs,
+            onIrNosotros = onIrNosotros,
+            onIrContacto = onIrContacto,
+            onIrCarrito = onIrCarrito,
+            onIrLogin = onIrLogin,
+            onIrPerfil = onIrPerfil
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        // Hero con GIF animado en bucle
+        HeroSection(
+            onIrProductos = onIrProductos
+        )
+
+        Spacer(Modifier.height(16.dp))
+        CarouselSection()
+
+        Spacer(Modifier.height(16.dp))
+        FeaturedProducts(onVerProducto = { /* TODO navegar a detalle */ })
+
+        Spacer(Modifier.height(16.dp))
+        AboutPreview(onIrContacto = onIrContacto)
+
+        Spacer(Modifier.height(12.dp))
+        Footer()
+    }
+}
+
+@Composable
+private fun HomeHeader(
+    onIrProductos: () -> Unit,
+    onIrBlogs: () -> Unit,
+    onIrNosotros: () -> Unit,
+    onIrContacto: () -> Unit,
+    onIrCarrito: () -> Unit,
+    onIrLogin: () -> Unit,
+    onIrPerfil: () -> Unit
+) {
+    val context = LocalContext.current
+    // loader con soporte para GIFs animados
+    val imageLoader = remember {
+        coil.ImageLoader.Builder(context)
+            .components {
+                if (Build.VERSION.SDK_INT >= 28) {
+                    add(coil.decode.ImageDecoderDecoder.Factory())
+                } else {
+                    add(coil.decode.GifDecoder.Factory())
+                }
+            }
+            .build()
+    }
+
+    Surface(color = Color.Transparent) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // 🔹 Logo con GIF animado
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                AsyncImage(
+                    model = "https://i.postimg.cc/Hs1Q5cQB/output-onlinegiftools-1.gif",
+                    imageLoader = imageLoader,
+                    contentDescription = "Logo animado Stuffies",
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(Modifier.width(10.dp))
+                Text(
+                    "STUFFIES",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+            }
+
+            // 🔹 Botones del header
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = onIrProductos) { Text("Productos", color = Color(0xFFB9B9D6)) }
+                TextButton(onClick = onIrBlogs) { Text("Blogs", color = Color(0xFFB9B9D6)) }
+                TextButton(onClick = onIrNosotros) { Text("Nosotros", color = Color(0xFFB9B9D6)) }
+                TextButton(onClick = onIrContacto) { Text("Contacto", color = Color(0xFFB9B9D6)) }
+
+                Spacer(Modifier.width(6.dp))
+                AssistChip(
+                    onClick = onIrCarrito,
+                    label = { Text("🛒", color = Color.White, fontSize = 12.sp) },
+                    shape = RoundedCornerShape(50),
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = Color(0xFF1E2339)
+                    )
+                )
+                Spacer(Modifier.width(8.dp))
+                FilledTonalButton(
+                    onClick = onIrLogin,
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color(0xFF1E2339),
+                        contentColor = Color(0xFFB9B9D6)
+                    )
+                ) { Text("Iniciar sesión") }
+                Spacer(Modifier.width(8.dp))
+                Box(
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF7C5CFF))
+                        .clickable { onIrPerfil() }
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+private fun HeroSection(onIrProductos: () -> Unit) {
+    val context = LocalContext.current
+
+    Surface(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
+            .heightIn(min = 190.dp)
+            .clip(RoundedCornerShape(22.dp)),
+        color = Color.Transparent,
+        tonalElevation = 0.dp
+    ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            // 🔹 Imagen de fondo estática
+            AsyncImage(
+                model = "https://i.postimg.cc/Dz8pthBy/448330999-1571729430349986-3007445543010160619-n.jpg",
+                contentDescription = "Imagen hero Stuffies",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(210.dp)
+            )
+
+            // 🔹 Capa semitransparente para que el texto sea legible
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(Color(0x66000000))
+            )
+
+            // 🔹 Contenido textual encima de la imagen
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(18.dp)
+            ) {
+                Text(
+                    "ROPA URBANA CON ESTILO",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold
+                )
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "Descubre nuestra colección de poleras, polerones, jeans y accesorios con estilo estadounidense",
+                    color = Color(0xFFEAF6FF),
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp
+                )
+                Spacer(Modifier.height(16.dp))
+                Button(
+                    onClick = onIrProductos,
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF6C55F6),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Ver productos", fontWeight = FontWeight.SemiBold)
+                }
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun CarouselSection() {
+    val imgs = listOf(
+        "https://i.postimg.cc/J45FXPsm/santia-Asco.png",
+        "https://i.postimg.cc/GpVgRf5P/IMG-1164.jpg",
+        "https://i.postimg.cc/ht451Tmm/476928810-17887865937208902-5206449320773511412-n.jpg"
+    )
+    val pagerState = rememberPagerState(pageCount = { imgs.size })
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(3000)
+            val next = (pagerState.currentPage + 1) % imgs.size
+            scope.launch { pagerState.animateScrollToPage(next) }
+        }
+    }
+
+    Column(Modifier.fillMaxWidth()) {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(190.dp)
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(16.dp))
+        ) { page ->
+            AsyncImage(
+                model = imgs[page],
+                contentDescription = "Promo $page",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            repeat(imgs.size) { i ->
+                val active = i == pagerState.currentPage
+                Box(
+                    Modifier
+                        .padding(horizontal = 3.dp)
+                        .size(if (active) 9.dp else 7.dp)
+                        .clip(CircleShape)
+                        .background(if (active) Color(0xFF6C55F6) else Color(0xFF444A66))
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FeaturedProducts(onVerProducto: (Int) -> Unit) {
+    Column(Modifier.fillMaxWidth()) {
+        Text(
+            "Productos Destacados",
+            color = Color(0xFFEAEAF4),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        Spacer(Modifier.height(8.dp))
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                ProductCard(id = 1, onVerProducto = onVerProducto, modifier = Modifier.weight(1f))
+                ProductCard(id = 2, onVerProducto = onVerProducto, modifier = Modifier.weight(1f))
+            }
+            Spacer(Modifier.height(12.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                ProductCard(id = 3, onVerProducto = onVerProducto, modifier = Modifier.weight(1f))
+                ProductCard(id = 4, onVerProducto = onVerProducto, modifier = Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProductCard(
+    id: Int,
+    onVerProducto: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier
+            .height(160.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .clickable { onVerProducto(id) },
+        color = Color(0xFF1E2339)
+    ) {
+        Column(Modifier.padding(12.dp)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(92.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Color(0xFF2A3152))
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "Producto $id",
+                color = Color.White,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                "$${id}9.990",
+                color = Color(0xFFB9B9D6),
+                fontSize = 12.sp
+            )
+        }
+    }
+}
+
+@Composable
+private fun AboutPreview(onIrContacto: () -> Unit) {
+    Surface(
+        color = Color(0xFFE9E6F3),
+        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .heightIn(min = 120.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(
+                    "Stuffies - Moda Urbana Chilena",
+                    color = Color(0xFF24243B),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "Desde nuestro lanzamiento en junio de 2024, nos dedicamos a crear ropa moderna y de calidad con estilo estadounidense para que todos puedan vestir a la última moda.",
+                    color = Color(0xFF3E3E55),
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp
+                )
+                Spacer(Modifier.height(10.dp))
+                OutlinedButton(
+                    onClick = onIrContacto,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF3B3B52))
+                ) { Text("Contacto") }
+            }
+            Spacer(Modifier.width(12.dp))
+            AsyncImage(
+                model = "https://i.postimg.cc/R0phZ77L/ESTRELLA-BLANCA.png",
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .size(74.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
+}
+
+@Composable
+private fun Footer() {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        text = "© 2024 Stuffies. Todos los derechos reservados.",
+        color = Color(0xFFB9B9D6),
+        fontSize = 12.sp
+    )
+}
