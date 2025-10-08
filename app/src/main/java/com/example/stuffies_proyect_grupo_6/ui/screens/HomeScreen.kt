@@ -361,7 +361,7 @@ private fun ProductCard(
         }
     }
 }
-
+ 
 @Composable
 private fun AboutPreview(onIrContacto: () -> Unit) {
     Surface(
