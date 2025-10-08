@@ -33,9 +33,7 @@ android {
     }
     kotlinOptions { jvmTarget = "17" }
 
-    buildFeatures {
-        compose = true
-    }
+    buildFeatures { compose = true }
 
     // ⚠️ Con Kotlin 2.x NO usar composeOptions{kotlinCompilerExtensionVersion}
     packaging {
@@ -60,6 +58,12 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3:1.3.0")
     implementation("androidx.compose.material:material-icons-extended")
+
+    // 🔹 Animaciones (Guía 12)
+    implementation("androidx.compose.animation:animation")
+
+    // 🔹 DataStore Preferences (Guía 12 - estado persistente)
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // 🔹 Coil (imágenes y GIF animados)
     implementation("io.coil-kt:coil-compose:2.7.0")
