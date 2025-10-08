@@ -2,8 +2,10 @@ package com.example.stuffies_proyect_grupo_6.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.stuffies_proyect_grupo_6.ui.screens.*
 
 @Composable
@@ -22,6 +24,8 @@ fun AppNavGraph(navController: NavHostController) {
                 onIrCarrito = { navController.navigate(Route.Carrito.path) },
                 onIrLogin = { navController.navigate(Route.Login.path) },
                 onIrPerfil = { navController.navigate(Route.Perfil.path) }
+                // Si más adelante quieres navegar a detalle desde Home:
+                // onVerProducto = { id -> navController.navigate(Route.ProductoDetalle.create(id)) }
             )
         }
 
@@ -34,9 +38,18 @@ fun AppNavGraph(navController: NavHostController) {
         composable(Route.Login.path) { LoginScreen() }
         composable(Route.Perfil.path) { ProfileScreen() }
 
-        // Ya las tienes en /screens (si cambian los nombres, ajusta aquí):
+        // Extras que ya tenías
         composable(Route.Registro.path) { RegistroScreen() }
         composable(Route.Resumen.path) { ResumenScreen() }
         composable(Route.Settings.path) { SettingsScreen() }
+
+        // 🔹 Destino con argumento: producto/{id}
+        composable(
+            route = Route.ProductoDetalle.path,
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id") ?: 0
+            ProductoDetalleScreen(id = id)
+        }
     }
 }
