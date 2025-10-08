@@ -1,23 +1,12 @@
 package com.example.stuffies_proyect_grupo_6.ui.screens
 
-import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.stuffies_proyect_grupo_6.viewmodel.UsuarioViewModel
 
 @Composable
 fun RegistroScreen(
-    vm: UsuarioViewModel,
-    onContinuar: () -> Unit
+    onBack: () -> Unit = {},
+    onHome: () -> Unit = {}
 ) {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text("REGISTRO", style = MaterialTheme.typography.headlineMedium)
-            Text("VM: ${vm.hashCode()}") // solo para que use el parámetro
-            Button(onClick = onContinuar) { Text("Continuar → Resumen") }
-        }
-    }
+    ScreenScaffold(title = "Registro", onBack = onBack, onHome = onHome)
 }

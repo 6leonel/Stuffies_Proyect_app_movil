@@ -12,10 +12,10 @@ class NavViewModel : ViewModel() {
     private val _events = MutableSharedFlow<NavEvent>()
     val events = _events.asSharedFlow()
 
-    fun goHome()    = send(NavEvent.To(Route.Home.path))
-    fun goProfile() = send(NavEvent.To(Route.Profile.path))
-    fun goSettings()= send(NavEvent.To(Route.Settings.path))
-    fun back()      = send(NavEvent.Back)
+    fun goHome()     = send(NavEvent.To(Route.Home.path))
+    fun goProfile()  = send(NavEvent.To(Route.Perfil.path))   // <-- aquí estaba el error (Perfil)
+    fun goSettings() = send(NavEvent.To(Route.Settings.path))
+    fun back()       = send(NavEvent.Back)
 
     private fun send(event: NavEvent) = viewModelScope.launch { _events.emit(event) }
 }

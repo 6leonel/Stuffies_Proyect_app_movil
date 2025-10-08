@@ -4,9 +4,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 
 @Composable
-fun SettingsScreen(
+fun BlogsScreen(
     onBack: () -> Unit = {},
     onHome: () -> Unit = {}
 ) {
-    ScreenScaffold(title = "Settings", onBack = onBack, onHome = onHome)
+    ScreenScaffold(title = "Blogs", onBack = onBack, onHome = onHome)
 }

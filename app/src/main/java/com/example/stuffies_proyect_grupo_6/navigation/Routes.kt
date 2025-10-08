@@ -1,9 +1,15 @@
 package com.example.stuffies_proyect_grupo_6.navigation
 
 sealed class Route(val path: String) {
-    object Home    : Route("home")
-    object Profile : Route("profile")
-    object Settings: Route("settings")
-    object Registro: Route("registro")   // si no los usas ahora, igual pueden quedar
-    object Resumen : Route("resumen")
+    data object Home : Route("home")
+    data object Productos : Route("productos")
+    data object Blogs : Route("blogs")
+    data object Nosotros : Route("nosotros")
+    data object Contacto : Route("contacto")
+    data object Carrito : Route("carrito")
+    data object Login : Route("login")
+    data object Perfil : Route("perfil")
+    data object Registro : Route("registro")
+    data object Resumen : Route("resumen")
+    data object Settings : Route("settings")
 }

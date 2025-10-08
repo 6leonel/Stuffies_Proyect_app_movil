@@ -1,25 +1,18 @@
 package com.example.stuffies_proyect_grupo_6.ui.screens
 
-import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.stuffies_proyect_grupo_6.viewmodel.UsuarioViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.stuffies_proyect_grupo_6.viewmodel.NavViewModel // ⚠️ cambia el tipo/nombre si tu VM es distinto
 
 @Composable
 fun ResumenScreen(
-    vm: UsuarioViewModel,
-    onBack: () -> Unit,
-    onIrHome: () -> Unit
+    vm: NavViewModel = viewModel(),   // ⚠️ ajusta el tipo si tu VM se llama diferente
+    onBack: () -> Unit = {},
+    onHome: () -> Unit = {}
 ) {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text("RESUMEN", style = MaterialTheme.typography.headlineMedium)
-            Text("VM: ${vm.hashCode()}")
-            Button(onClick = onBack) { Text("← Volver") }
-            Button(onClick = onIrHome) { Text("Ir a Home (cerrar flujo)") }
-        }
+    ScreenScaffold(title = "Resumen", onBack = onBack, onHome = onHome) {
+        // Ejemplo de uso del vm si quieres:
+        // Text("Estado: ${vm.algo}")
     }
 }
