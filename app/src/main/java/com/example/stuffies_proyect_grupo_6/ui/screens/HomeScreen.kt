@@ -30,6 +30,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 
 
 @Composable
@@ -135,7 +137,7 @@ private fun HomeHeader(
                     TextButton(onClick = onIrProductos) { Text("Productos", color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrBlogs)     { Text("Blogs",     color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrNosotros)  { Text("Nosotros",  color = Color(0xFFB9B9D6)) }
-                    
+
                     TextButton(onClick = onIrLogin)     { Text("Inicio sesión", color = Color(0xFFB9B9D6)) }
 
                     TextButton(onClick = onIrContacto)  { Text("Contacto",  color = Color(0xFFB9B9D6)) }
@@ -287,6 +289,8 @@ private fun CarouselSection() {
 
 @Composable
 private fun FeaturedProducts(onVerProducto: (Int) -> Unit) {
+    val destacados = remember { Catalogo.productos.filter { it.destacado } }
+
     Column(Modifier.fillMaxWidth()) {
         Text(
             "Productos Destacados",
@@ -297,19 +301,24 @@ private fun FeaturedProducts(onVerProducto: (Int) -> Unit) {
         )
         Spacer(Modifier.height(8.dp))
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+        if (destacados.isEmpty()) {
+            Text(
+                "No hay productos destacados por ahora.",
+                color = Color(0xFFB9B9D6),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+            return
+        }
+
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ProductCard(id = 1, onVerProducto = onVerProducto, modifier = Modifier.weight(1f))
-                ProductCard(id = 2, onVerProducto = onVerProducto, modifier = Modifier.weight(1f))
-            }
-            Spacer(Modifier.height(12.dp))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ProductCard(id = 3, onVerProducto = onVerProducto, modifier = Modifier.weight(1f))
-                ProductCard(id = 4, onVerProducto = onVerProducto, modifier = Modifier.weight(1f))
+            items(destacados, key = { it.id }) { p ->
+                FeaturedProductCard(
+                    p = p,
+                    onClick = { onVerProducto(p.id) }
+                )
             }
         }
     }
@@ -413,3 +422,43 @@ private fun Footer() {
         fontSize = 12.sp
     )
 }
+@Composable
+private fun FeaturedProductCard(
+    p: Producto,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .width(220.dp)
+            .height(160.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .clickable { onClick() },
+        color = Color(0xFF1E2339)
+    ) {
+        Column(Modifier.padding(12.dp)) {
+            AsyncImage(
+                model = p.imagen,
+                contentDescription = p.nombre,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(92.dp)
+                    .clip(RoundedCornerShape(10.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                p.nombre,
+                color = Color.White,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                clp(p.precio),
+                color = Color(0xFFB9B9D6),
+                fontSize = 12.sp
+            )
+        }
+    }
+}
+
