@@ -42,7 +42,8 @@ fun HomeScreen(
     onIrContacto: () -> Unit,
     onIrCarrito: () -> Unit,
     onIrLogin: () -> Unit,
-    onIrPerfil: () -> Unit
+    onIrPerfil: () -> Unit,
+    onIrRegistro: () -> Unit
 ) {
     // Fondo negro
     val fondo = Brush.verticalGradient(
@@ -62,7 +63,9 @@ fun HomeScreen(
             onIrContacto = onIrContacto,
             onIrCarrito = onIrCarrito,
             onIrLogin = onIrLogin,
-            onIrPerfil = onIrPerfil
+            onIrPerfil = onIrPerfil,
+            onIrRegistro = onIrRegistro
+
         )
 
         Spacer(Modifier.height(8.dp))
@@ -94,7 +97,8 @@ private fun HomeHeader(
     onIrContacto: () -> Unit,
     onIrCarrito: () -> Unit,
     onIrLogin: () -> Unit,
-    onIrPerfil: () -> Unit
+    onIrPerfil: () -> Unit,
+    onIrRegistro: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val imageLoader = remember {
@@ -137,10 +141,10 @@ private fun HomeHeader(
                     TextButton(onClick = onIrProductos) { Text("Productos", color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrBlogs)     { Text("Blogs",     color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrNosotros)  { Text("Nosotros",  color = Color(0xFFB9B9D6)) }
-
-                    TextButton(onClick = onIrLogin)     { Text("Inicio sesión", color = Color(0xFFB9B9D6)) }
-
                     TextButton(onClick = onIrContacto)  { Text("Contacto",  color = Color(0xFFB9B9D6)) }
+                    TextButton(onClick = onIrLogin)     { Text("Inicio sesión", color = Color(0xFFB9B9D6)) }
+                    TextButton(onClick = onIrRegistro)  { Text("Registro",  color = Color(0xFFB9B9D6)) }
+
                 }
 
                 Spacer(Modifier.width(6.dp))
