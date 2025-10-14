@@ -61,6 +61,9 @@ dependencies {
 
     // 🔹 Animaciones (Guía 12)
     implementation("androidx.compose.animation:animation")
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+
 
     // 🔹 DataStore Preferences (Guía 12 - estado persistente)
     implementation("androidx.datastore:datastore-preferences:1.1.1")

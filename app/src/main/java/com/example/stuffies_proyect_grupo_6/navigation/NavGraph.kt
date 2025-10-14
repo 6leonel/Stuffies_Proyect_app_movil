@@ -24,6 +24,7 @@ fun AppNavGraph(navController: NavHostController) {
                 onIrProductos = { navController.navigate(Route.Productos.path) },
                 onIrBlogs     = { navController.navigate(Route.Blogs.path) },
                 onIrNosotros  = { navController.navigate(Route.Nosotros.path) },
+                onIrAnimacion = { navController.navigate(Route.Animacion.path) },
                 onIrContacto  = { navController.navigate(Route.Contacto.path) },
                 onIrCarrito   = { navController.navigate(Route.Carrito.path) },
                 onIrLogin     = { navController.navigate(Route.Login.path) },
@@ -38,6 +39,7 @@ fun AppNavGraph(navController: NavHostController) {
         composable(Route.Productos.path) { ProductosScreen() }
         composable(Route.Blogs.path)     { BlogsScreen() }
         composable(Route.Nosotros.path)  { NosotrosScreen() }
+        composable(Route.Animacion.path) { AnimacionScreen() }
         composable(Route.Contacto.path)  { ContactoScreen() }
         composable(Route.Carrito.path)   { CarritoScreen() }
         composable(Route.Login.path)     { LoginScreen() }

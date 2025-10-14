@@ -39,6 +39,7 @@ fun HomeScreen(
     onIrProductos: () -> Unit,
     onIrBlogs: () -> Unit,
     onIrNosotros: () -> Unit,
+    onIrAnimacion: () -> Unit = {},
     onIrContacto: () -> Unit,
     onIrCarrito: () -> Unit,
     onIrLogin: () -> Unit,
@@ -60,6 +61,7 @@ fun HomeScreen(
             onIrProductos = onIrProductos,
             onIrBlogs = onIrBlogs,
             onIrNosotros = onIrNosotros,
+            onIrAnimacion = onIrAnimacion,
             onIrContacto = onIrContacto,
             onIrCarrito = onIrCarrito,
             onIrLogin = onIrLogin,
@@ -94,6 +96,7 @@ private fun HomeHeader(
     onIrProductos: () -> Unit,
     onIrBlogs: () -> Unit,
     onIrNosotros: () -> Unit,
+    onIrAnimacion: () -> Unit = {},
     onIrContacto: () -> Unit,
     onIrCarrito: () -> Unit,
     onIrLogin: () -> Unit,
@@ -141,6 +144,7 @@ private fun HomeHeader(
                     TextButton(onClick = onIrProductos) { Text("Productos", color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrBlogs)     { Text("Blogs",     color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrNosotros)  { Text("Nosotros",  color = Color(0xFFB9B9D6)) }
+                    TextButton(onClick = onIrAnimacion) { Text("Animación", color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrContacto)  { Text("Contacto",  color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrLogin)     { Text("Inicio sesión", color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrRegistro)  { Text("Registro",  color = Color(0xFFB9B9D6)) }
