@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.draw.clip
 
 
+
 /* ---------- Colores “negro total” + card blanca ---------- */
 private val BlackBg  = Color(0xFF000000)
 private val GrayText = Color(0xFFBFBFBF)

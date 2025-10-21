@@ -35,8 +35,6 @@ import androidx.compose.foundation.lazy.items
 import android.content.Context
 import androidx.compose.runtime.LaunchedEffect
 
-
-
 @Composable
 fun HomeScreen(
     onIrProductos: () -> Unit,
@@ -70,15 +68,12 @@ fun HomeScreen(
             onIrLogin = onIrLogin,
             onIrPerfil = onIrPerfil,
             onIrRegistro = onIrRegistro
-
         )
 
         Spacer(Modifier.height(8.dp))
 
         // Hero con GIF animado en bucle
-        HeroSection(
-            onIrProductos = onIrProductos
-        )
+        HeroSection(onIrProductos = onIrProductos)
 
         Spacer(Modifier.height(16.dp))
         CarouselSection()
@@ -114,6 +109,11 @@ private fun HomeHeader(
                 else add(GifDecoder.Factory())
             }.build()
     }
+
+    // === Contador del carrito ===
+    val ctx = LocalContext.current
+    var cartCount by remember { mutableStateOf(0) }
+    LaunchedEffect(Unit) { cartCount = readCartUnits(ctx) }
 
     Surface(color = Color.Transparent) {
         Row(
@@ -152,15 +152,14 @@ private fun HomeHeader(
                     TextButton(onClick = onIrLogin)     { Text("Inicio sesión", color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrRegistro)  { Text("Registro",  color = Color(0xFFB9B9D6)) }
 
+                    // === Botón Carrito (n) ===
+                    TextButton(onClick = onIrCarrito) {
+                        Text(
+                            text = if (cartCount > 0) "Carrito ($cartCount)" else "Carrito",
+                            color = Color(0xFFB9B9D6)
+                        )
+                    }
                 }
-
-                Spacer(Modifier.width(6.dp))
-                AssistChip(
-                    onClick = onIrCarrito,
-                    label = { Text("🛒", color = Color.White, fontSize = 12.sp) },
-                    shape = RoundedCornerShape(50),
-                    colors = AssistChipDefaults.assistChipColors(containerColor = Color(0xFF1E2339))
-                )
 
                 Spacer(Modifier.width(8.dp))
                 Box(
@@ -174,8 +173,6 @@ private fun HomeHeader(
         }
     }
 }
-
-
 
 @Composable
 private fun HeroSection(onIrProductos: () -> Unit) {
@@ -242,7 +239,6 @@ private fun HeroSection(onIrProductos: () -> Unit) {
         }
     }
 }
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -372,7 +368,7 @@ private fun ProductCard(
         }
     }
 }
- 
+
 @Composable
 private fun AboutPreview(onIrContacto: () -> Unit) {
     Surface(
@@ -433,6 +429,7 @@ private fun Footer() {
         fontSize = 12.sp
     )
 }
+
 @Composable
 private fun FeaturedProductCard(
     p: Producto,
@@ -473,3 +470,15 @@ private fun FeaturedProductCard(
     }
 }
 
+/* ===================== Helper para contador del carrito ===================== */
+// Lee el total de unidades guardadas en el carrito (mismo storage que CarritoScreen)
+private fun readCartUnits(ctx: Context): Int {
+    val prefs = ctx.getSharedPreferences("stuffies_cart", Context.MODE_PRIVATE)
+    val raw = prefs.getString("carrito_raw", "") ?: ""
+    if (raw.isBlank()) return 0
+    val SEP = "\u001F"
+    return raw.lineSequence()
+        .filter { it.isNotBlank() }
+        .map { it.split(SEP).getOrNull(3)?.toIntOrNull() ?: 1 } // campo "cantidad"
+        .sum()
+}
