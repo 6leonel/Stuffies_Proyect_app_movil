@@ -91,4 +91,13 @@ dependencies {
     implementation("io.coil-kt:coil:2.7.0")          // <— core (necesario para .components)
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("io.coil-kt:coil-gif:2.7.0")
+    dependencies {
+        // Ubicación
+        implementation("com.google.android.gms:play-services-location:21.3.0")
+
+        // Google Maps
+        implementation("com.google.android.gms:play-services-maps:18.2.0")
+        implementation("com.google.maps.android:maps-compose:4.4.1")
+    }
+
 }

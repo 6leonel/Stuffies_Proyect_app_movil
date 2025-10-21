@@ -13,6 +13,8 @@ sealed class Route(val path: String) {
     data object Registro : Route("registro")
     data object Resumen : Route("resumen")
     data object Settings : Route("settings")
+    data object Mapa : Route("mapa")
+
 
     // 🔹 Ruta con argumento (ej: detalle de producto)
     data object ProductoDetalle : Route("producto/{id}") {
