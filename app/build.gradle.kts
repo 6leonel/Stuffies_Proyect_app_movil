@@ -35,11 +35,9 @@ android {
 
     buildFeatures { compose = true }
 
-    // ⚠️ Con Kotlin 2.x NO usar composeOptions{kotlinCompilerExtensionVersion}
+    // ⚠️ Con Kotlin 2.x NO usar composeOptions { kotlinCompilerExtensionVersion }
     packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     }
 }
 
@@ -73,12 +71,18 @@ dependencies {
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
-    // ✅ Coil ÚNICO (misma versión para compose + gif) — necesario para GIF en API 24
+    // ✅ Coil (único, sin duplicados)
+    implementation("io.coil-kt:coil:2.7.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("io.coil-kt:coil-gif:2.7.0")
 
-    // TLS moderno (ayuda mucho en Android 7.0)
+    // TLS moderno (Android 7)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // Ubicación + Google Maps + Maps Compose (sin duplicados)
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.maps.android:maps-compose:4.4.1")
 
     // Tests / debug
     testImplementation("junit:junit:4.13.2")
@@ -87,21 +91,4 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    // Coil (misma versión para todo)
-    implementation("io.coil-kt:coil:2.7.0")          // <— core (necesario para .components)
-    implementation("io.coil-kt:coil-compose:2.7.0")
-    implementation("io.coil-kt:coil-gif:2.7.0")
-    dependencies {
-        // Ubicación
-        implementation("com.google.android.gms:play-services-location:21.3.0")
-
-        // Google Maps
-        implementation("com.google.android.gms:play-services-maps:18.2.0")
-        implementation("com.google.maps.android:maps-compose:4.4.1")
-        implementation("com.google.maps.android:maps-compose:4.4.1")
-        implementation("com.google.android.gms:play-services-maps:19.0.0")
-        implementation("com.google.android.gms:play-services-location:21.3.0")
-
-    }
-
 }
