@@ -29,7 +29,8 @@ fun AppNavGraph(navController: NavHostController) {
                 onIrCarrito   = { navController.navigate(Route.Carrito.path) },
                 onIrLogin     = { navController.navigate(Route.Login.path) },
                 onIrPerfil    = { navController.navigate(Route.Perfil.path) },
-                onIrRegistro  = { navController.navigate(Route.Registro.path) }
+                onIrRegistro  = { navController.navigate(Route.Registro.path) },
+                onIrMapa      = { navController.navigate(Route.Mapa.path) }   // 👈 añadido
             )
         }
 
@@ -37,13 +38,9 @@ fun AppNavGraph(navController: NavHostController) {
         composable(Route.Productos.path) {
             ProductosScreen(
                 onVerDetalle = { id ->
-                    // 👇 Ir al detalle: producto/{id}
                     navController.navigate(Route.ProductoDetalle.create(id))
                 },
-                onAgregar = { _ ->
-                    // opcional: puedes navegar al carrito o manejar el agregado aquí
-                    // navController.navigate(Route.Carrito.path)
-                }
+                onAgregar = { _ -> /* opcional */ }
             )
         }
         composable(Route.Blogs.path)     { BlogsScreen() }
@@ -54,15 +51,19 @@ fun AppNavGraph(navController: NavHostController) {
         composable(Route.Login.path)     { LoginScreen() }
         composable(Route.Perfil.path)    { ProfileScreen() }
 
+        // MAPA (nueva pantalla)
+        composable(Route.Mapa.path) {
+            MapaScreen(onBack = { navController.popBackStack() })
+        }
+
         // SETTINGS
         composable(Route.Settings.path) { SettingsScreen() }
 
-        // ===== SUB-GRAPH para compartir el MISMO ViewModel =====
+        // ===== SUB-GRAPH de registro =====
         navigation(
             route = "registro_graph",
             startDestination = Route.Registro.path
         ) {
-            // REGISTRO
             composable(Route.Registro.path) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry("registro_graph")
@@ -73,8 +74,6 @@ fun AppNavGraph(navController: NavHostController) {
                     viewModel     = vm
                 )
             }
-
-            // RESUMEN
             composable(Route.Resumen.path) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry("registro_graph")
@@ -86,9 +85,8 @@ fun AppNavGraph(navController: NavHostController) {
                 )
             }
         }
-        // ===== FIN SUB-GRAPH =====
 
-        // Detalle con argumento
+        // DETALLE CON ARGUMENTO
         composable(
             route = Route.ProductoDetalle.path,
             arguments = listOf(navArgument("id") { type = NavType.IntType })

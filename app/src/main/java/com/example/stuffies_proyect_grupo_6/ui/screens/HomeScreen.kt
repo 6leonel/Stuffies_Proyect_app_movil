@@ -1,12 +1,17 @@
 package com.example.stuffies_proyect_grupo_6.ui.screens
 
+import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -28,12 +33,6 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import android.content.Context
-import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun HomeScreen(
@@ -45,9 +44,9 @@ fun HomeScreen(
     onIrCarrito: () -> Unit,
     onIrLogin: () -> Unit,
     onIrPerfil: () -> Unit,
-    onIrRegistro: () -> Unit
+    onIrRegistro: () -> Unit,
+    onIrMapa: () -> Unit            // 👈 NUEVO: navegación al mapa
 ) {
-    // Fondo negro
     val fondo = Brush.verticalGradient(
         colorStops = arrayOf(0f to Color.Black, 1f to Color.Black)
     )
@@ -67,19 +66,19 @@ fun HomeScreen(
             onIrCarrito = onIrCarrito,
             onIrLogin = onIrLogin,
             onIrPerfil = onIrPerfil,
-            onIrRegistro = onIrRegistro
+            onIrRegistro = onIrRegistro,
+            onIrMapa = onIrMapa        // 👈 NUEVO
         )
 
         Spacer(Modifier.height(8.dp))
 
-        // Hero con GIF animado en bucle
         HeroSection(onIrProductos = onIrProductos)
 
         Spacer(Modifier.height(16.dp))
         CarouselSection()
 
         Spacer(Modifier.height(16.dp))
-        FeaturedProducts(onVerProducto = { /* TODO navegar a detalle */ })
+        FeaturedProducts(onVerProducto = { /* Navegar a detalle si quieres */ })
 
         Spacer(Modifier.height(16.dp))
         AboutPreview(onIrContacto = onIrContacto)
@@ -100,6 +99,7 @@ private fun HomeHeader(
     onIrLogin: () -> Unit,
     onIrPerfil: () -> Unit,
     onIrRegistro: () -> Unit = {},
+    onIrMapa: () -> Unit             // 👈 NUEVO
 ) {
     val context = LocalContext.current
     val imageLoader = remember {
@@ -130,14 +130,16 @@ private fun HomeHeader(
                     model = "https://i.postimg.cc/Hs1Q5cQB/output-onlinegiftools-1.gif",
                     imageLoader = imageLoader,
                     contentDescription = "Logo animado Stuffies",
-                    modifier = Modifier.size(34.dp).clip(RoundedCornerShape(8.dp)),
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
                 )
                 Spacer(Modifier.width(10.dp))
                 Text("STUFFIES", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
             }
 
-            // Nav + cuenta (scroll horizontal para que no se corte "Nosotros")
+            // Nav + cuenta
             Row(verticalAlignment = Alignment.CenterVertically) {
 
                 Row(
@@ -149,10 +151,14 @@ private fun HomeHeader(
                     TextButton(onClick = onIrNosotros)  { Text("Nosotros",  color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrAnimacion) { Text("Animación", color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrContacto)  { Text("Contacto",  color = Color(0xFFB9B9D6)) }
+
+                    // 👇 NUEVO botón Mapa
+                    TextButton(onClick = onIrMapa)      { Text("Mapa",      color = Color(0xFFB9B9D6)) }
+
                     TextButton(onClick = onIrLogin)     { Text("Inicio sesión", color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrRegistro)  { Text("Registro",  color = Color(0xFFB9B9D6)) }
 
-                    // === Botón Carrito (n) ===
+                    // Carrito (n)
                     TextButton(onClick = onIrCarrito) {
                         Text(
                             text = if (cartCount > 0) "Carrito ($cartCount)" else "Carrito",
@@ -176,8 +182,6 @@ private fun HomeHeader(
 
 @Composable
 private fun HeroSection(onIrProductos: () -> Unit) {
-    val context = LocalContext.current
-
     Surface(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -188,7 +192,6 @@ private fun HeroSection(onIrProductos: () -> Unit) {
         tonalElevation = 0.dp
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            // 🔹 Imagen de fondo estática
             AsyncImage(
                 model = "https://i.postimg.cc/Dz8pthBy/448330999-1571729430349986-3007445543010160619-n.jpg",
                 contentDescription = "Imagen hero Stuffies",
@@ -197,15 +200,11 @@ private fun HeroSection(onIrProductos: () -> Unit) {
                     .fillMaxWidth()
                     .height(210.dp)
             )
-
-            // 🔹 Capa semitransparente para que el texto sea legible
             Box(
                 modifier = Modifier
                     .matchParentSize()
                     .background(Color(0x66000000))
             )
-
-            // 🔹 Contenido textual encima de la imagen
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
