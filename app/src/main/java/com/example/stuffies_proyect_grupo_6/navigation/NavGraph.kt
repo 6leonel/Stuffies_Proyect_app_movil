@@ -30,13 +30,22 @@ fun AppNavGraph(navController: NavHostController) {
                 onIrLogin     = { navController.navigate(Route.Login.path) },
                 onIrPerfil    = { navController.navigate(Route.Perfil.path) },
                 onIrRegistro  = { navController.navigate(Route.Registro.path) }
-
-
             )
         }
 
         // PANTALLAS PRINCIPALES
-        composable(Route.Productos.path) { ProductosScreen() }
+        composable(Route.Productos.path) {
+            ProductosScreen(
+                onVerDetalle = { id ->
+                    // 👇 Ir al detalle: producto/{id}
+                    navController.navigate(Route.ProductoDetalle.create(id))
+                },
+                onAgregar = { _ ->
+                    // opcional: puedes navegar al carrito o manejar el agregado aquí
+                    // navController.navigate(Route.Carrito.path)
+                }
+            )
+        }
         composable(Route.Blogs.path)     { BlogsScreen() }
         composable(Route.Nosotros.path)  { NosotrosScreen() }
         composable(Route.Animacion.path) { AnimacionScreen() }
@@ -45,13 +54,10 @@ fun AppNavGraph(navController: NavHostController) {
         composable(Route.Login.path)     { LoginScreen() }
         composable(Route.Perfil.path)    { ProfileScreen() }
 
-        // SETTINGS (ajusta si tu SettingsScreen no usa callbacks)
-        composable(Route.Settings.path) {
-            SettingsScreen()
-        }
+        // SETTINGS
+        composable(Route.Settings.path) { SettingsScreen() }
 
-
-        // ===== GUIA 11: SUB-GRAPH para compartir el MISMO ViewModel =====
+        // ===== SUB-GRAPH para compartir el MISMO ViewModel =====
         navigation(
             route = "registro_graph",
             startDestination = Route.Registro.path
