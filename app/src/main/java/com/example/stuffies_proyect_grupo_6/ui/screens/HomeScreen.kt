@@ -32,6 +32,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import android.content.Context
+import androidx.compose.runtime.LaunchedEffect
+
 
 
 @Composable
