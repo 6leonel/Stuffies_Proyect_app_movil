@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.stuffies_proyect_grupo_6.data.remote.AdviceApi   // ✅ import correcto
 
 // ===== Colores fijos para “negro total” =====
 private val BlackBg = Color(0xFF000000)
@@ -40,31 +41,57 @@ private data class BlogPost(
 )
 
 private val BLOGS = listOf(
-    BlogPost("b001","Nuestra Historia","2025-09-30","Noticias",
+    BlogPost(
+        "b001",
+        "Nuestra Historia",
+        "2025-09-30",
+        "Noticias",
         "Cómo partimos: del boceto a la primera colección.",
-        "https://i.postimg.cc/PxD35Mgg/DADOS.png"),
-    BlogPost("b002","Historias que visten distinto","2025-09-21","Estilo",
+        "https://i.postimg.cc/PxD35Mgg/DADOS.png"
+    ),
+    BlogPost(
+        "b002",
+        "Historias que visten distinto",
+        "2025-09-21",
+        "Estilo",
         "Moda, creatividad y experiencias que trascienden la ropa.",
-        "https://i.postimg.cc/Dz8pthBy/448330999-1571729430349986-3007445543010160619-n.jpg"),
-    BlogPost("b003","Estilo y cultura urbana","2025-09-15","Estilo",
+        "https://i.postimg.cc/Dz8pthBy/448330999-1571729430349986-3007445543010160619-n.jpg"
+    ),
+    BlogPost(
+        "b003",
+        "Estilo y cultura urbana",
+        "2025-09-15",
+        "Estilo",
         "Tendencias y consejos para inspirar tu look diario.",
-        "https://i.postimg.cc/DwCYj0QM/IMG-1162-2.jpg"),
-    BlogPost("b004","Guía de tallas Stuffies","2025-09-10","Tutoriales",
+        "https://i.postimg.cc/DwCYj0QM/IMG-1162-2.jpg"
+    ),
+    BlogPost(
+        "b004",
+        "Guía de tallas Stuffies",
+        "2025-09-10",
+        "Tutoriales",
         "Aprende a medirte en casa y elegir tu talla ideal.",
-        "https://stuffiesconcept.com/cdn/shop/files/WhiteDice1.png?v=1753404231&width=1200"),
-    BlogPost("b005","Cuidados de tus prendas","2025-08-28","Tutoriales",
-        "Lava en frío, seca a la sombra y conserva colores vivos.",
-        "https://i.postimg.cc/PxD35Mgg/DADOS.png"),
-    BlogPost("b006","Nueva cápsula FW","2025-08-10","Noticias",
+        "https://stuffiesconcept.com/cdn/shop/files/WhiteDice1.png?v=1753404231&width=600"
+    )
+)
+
+// Mock para el carrusel de arriba
+private val HIGHLIGHTS = listOf(
+    BlogPost(
+        "h001",
+        "Drop limitado DICE",
+        "2025-10-05",
+        "Colección",
         "Sneak peek de la colección otoño-invierno.",
-        "https://i.postimg.cc/DwCYj0QM/IMG-1162-2.jpg")
+        "https://i.postimg.cc/DwCYj0QM/IMG-1162-2.jpg"
+    )
 )
 
 // ===== Pantalla =====
 @Composable
 fun BlogsScreen() {
     Scaffold(
-        containerColor = BlackBg,        // ⬅️ fondo del Scaffold
+        containerColor = BlackBg,
         contentColor = Color.White,
         topBar = {
             CenterAlignedTopAppBar(
@@ -76,7 +103,6 @@ fun BlogsScreen() {
             )
         }
     ) { inner ->
-        // Capa raíz NEGRA que envuelve TODO
         Column(
             modifier = Modifier
                 .padding(inner)
@@ -86,23 +112,25 @@ fun BlogsScreen() {
         ) {
             HeroSection()
             CarouselSection()
+            AdviceSection()
             BlogsListSection()
             AboutPreviewSection()
         }
     }
 }
 
-// ===== Hero (NEGRO explícito) =====
+// ===== Hero =====
 @Composable
 private fun HeroSection() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(BlackBg)         // ⬅️ nada de surfaceVariant
+            .background(BlackBg)
             .padding(vertical = 24.dp, horizontal = 16.dp)
     ) {
         Column {
-            Text("BLOGS",
+            Text(
+                "BLOGS",
                 color = Color.White,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
@@ -113,73 +141,77 @@ private fun HeroSection() {
                 color = GrayText,
                 style = MaterialTheme.typography.bodyMedium
             )
-            Spacer(Modifier.height(12.dp))
-            Button(onClick = { /* ir a productos */ }) { Text("Ver productos") }
         }
     }
 }
 
-// ===== Carrusel =====
+// ===== Carrusel destacado =====
 @Composable
 private fun CarouselSection() {
-    val images = listOf(
-        "https://i.postimg.cc/PxD35Mgg/DADOS.png" to ("Blogs" to "Descubre las historias que tenemos para contar."),
-        "https://i.postimg.cc/Dz8pthBy/448330999-1571729430349986-3007445543010160619-n.jpg" to ("Historias que Visten Distinto" to "Moda, creatividad y experiencias que trascienden la ropa."),
-        "https://i.postimg.cc/DwCYj0QM/IMG-1162-2.jpg" to ("Estilo y Cultura Urbana" to "Tendencias, consejos y novedades para inspirar tu look diario.")
-    )
-    val pagerState = rememberPagerState { images.size }
+    val pagerState = rememberPagerState(pageCount = { HIGHLIGHTS.size })
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(BlackBg)
-            .padding(vertical = 12.dp)
+            .padding(bottom = 16.dp)
     ) {
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
-                .background(BlackBg)
+                .height(220.dp)
         ) { page ->
-            val (img, titlePair) = images[page]
-            val (title, subtitle) = titlePair
-            Box(Modifier.fillMaxSize()) {
-                AsyncImage(
-                    model = img,
-                    contentDescription = title,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .background(Color.Black.copy(alpha = 0.45f))
-                        .fillMaxWidth()
-                        .padding(12.dp)
-                ) {
-                    Text(title, color = Color.White, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                    Text(subtitle, color = Color.White, style = MaterialTheme.typography.bodySmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            val item = HIGHLIGHTS[page]
+            ElevatedCard(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                colors = CardDefaults.elevatedCardColors(containerColor = BlackCard)
+            ) {
+                Column {
+                    AsyncImage(
+                        model = item.imagen,
+                        contentDescription = item.titulo,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(140.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = item.titulo,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = item.extracto,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = GrayText,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
         }
 
-        // Indicadores
+        Spacer(Modifier.height(8.dp))
+
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(BlackBg)
-                .padding(top = 8.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            repeat(images.size) { ix ->
-                val selected = pagerState.currentPage == ix
+            repeat(HIGHLIGHTS.size) { index ->
+                val selected = pagerState.currentPage == index
                 Box(
                     modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .size(if (selected) 10.dp else 8.dp)
+                        .padding(2.dp)
+                        .size(if (selected) 10.dp else 6.dp)
                         .background(
-                            if (selected) Color.White else GrayOutline,
+                            color = if (selected) Color.White else GrayOutline,
                             shape = MaterialTheme.shapes.small
                         )
                 )
@@ -188,209 +220,222 @@ private fun CarouselSection() {
     }
 }
 
-// ===== Lista + Filtros + Paginación (NEGRO en inputs, menús y cards) =====
+// ===== Sección API externa =====
 @Composable
-private fun BlogsListSection() {
-    var query by remember { mutableStateOf("") }
-    var categoria by remember { mutableStateOf("*") }
-    val pageSize = 6
-    var page by remember { mutableStateOf(1) }
-    val categorias = listOf("*", "Noticias", "Estilo", "Tutoriales")
+private fun AdviceSection() {
+    var adviceText by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
 
-    val filtered = remember(query, categoria) {
-        BLOGS.filter { b ->
-            val q = query.trim().lowercase()
-            val matchText = q.isBlank() || b.titulo.lowercase().contains(q) || b.extracto.lowercase().contains(q)
-            val matchCat = categoria == "*" || b.categoria == categoria
-            matchText && matchCat
+    LaunchedEffect(Unit) {
+        try {
+            isLoading = true
+            error = null
+            val response = AdviceApi.service.getAdvice()
+            adviceText = response.slip.advice
+        } catch (e: Exception) {
+            error = "No se pudo obtener el tip del día 🤕"
+        } finally {
+            isLoading = false
         }
     }
 
-    val totalPages = (filtered.size + pageSize - 1) / pageSize
-    if (page > totalPages && totalPages > 0) page = totalPages
-    if (totalPages == 0) page = 1
-
-    val from = (page - 1) * pageSize
-    val to = (from + pageSize).coerceAtMost(filtered.size)
-    val pageItems = if (from in 0..filtered.size && to in 0..filtered.size) filtered.subList(from, to) else emptyList()
-
     Column(
         modifier = Modifier
-            .background(BlackBg)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
-        // Filtros
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Bottom
+        Text(
+            text = "Tip del día (API externa)",
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.White
+        )
+        Spacer(Modifier.height(8.dp))
+        ElevatedCard(
+            colors = CardDefaults.elevatedCardColors(containerColor = BlackCard)
         ) {
-            OutlinedTextField(
-                value = query,
-                onValueChange = { query = it; page = 1 },
-                label = { Text("Buscar en blogs…") },
-                singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = BlackBg,
-                    focusedContainerColor = BlackBg,
-                    unfocusedTextColor = Color.White,
-                    focusedTextColor = Color.White,
-                    unfocusedLabelColor = GrayOutline,
-                    focusedLabelColor = Color.White,
-                    unfocusedBorderColor = GrayOutline,
-                    focusedBorderColor = Color.White,
-                    cursorColor = Color.White
-                ),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp)
-            )
+            Box(modifier = Modifier.padding(16.dp)) {
+                when {
+                    isLoading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp
+                        )
+                    }
 
-            var menuOpen by remember { mutableStateOf(false) }
-            ExposedDropdownMenuBox(
-                expanded = menuOpen,
-                onExpandedChange = { menuOpen = !menuOpen },
-                modifier = Modifier.widthIn(min = 160.dp)
-            ) {
-                OutlinedTextField(
-                    readOnly = true,
-                    value = categoria,
-                    onValueChange = {},
-                    label = { Text("Categoría") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = menuOpen) },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = BlackBg,
-                        focusedContainerColor = BlackBg,
-                        unfocusedTextColor = Color.White,
-                        focusedTextColor = Color.White,
-                        unfocusedLabelColor = GrayOutline,
-                        focusedLabelColor = Color.White,
-                        unfocusedBorderColor = GrayOutline,
-                        focusedBorderColor = Color.White,
-                        cursorColor = Color.White
-                    ),
-                    modifier = Modifier.menuAnchor()
-                )
-                ExposedDropdownMenu(
-                    expanded = menuOpen,
-                    onDismissRequest = { menuOpen = false },
-                    containerColor = BlackCard
-                ) {
-                    categorias.forEach { opt ->
-                        DropdownMenuItem(
-                            text = { Text(opt, color = Color.White) },
-                            onClick = {
-                                categoria = opt
-                                page = 1
-                                menuOpen = false
-                            }
+                    error != null -> {
+                        Text(
+                            text = error ?: "",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = GrayText
+                        )
+                    }
+
+                    adviceText != null -> {
+                        Text(
+                            text = "\"$adviceText\"",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = GrayText
                         )
                     }
                 }
             }
         }
+        Spacer(Modifier.height(24.dp))
+    }
+}
 
-        Spacer(Modifier.height(12.dp))
+// ===== Lista + filtros =====
+@Composable
+private fun BlogsListSection() {
+    var query by remember { mutableStateOf("") }
+    var categoria by remember { mutableStateOf("Todos") }
 
-        // Grid
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(BlackBg)
+            .padding(horizontal = 16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            OutlinedTextField(
+                value = query,
+                onValueChange = { query = it },
+                label = { Text("Buscar", color = GrayText) },
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = BlackCard,
+                    unfocusedContainerColor = BlackCard,
+                    focusedBorderColor = Color.White,
+                    unfocusedBorderColor = GrayOutline,
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedLabelColor = GrayText,
+                    unfocusedLabelColor = GrayText,
+                )
+            )
+
+            Spacer(Modifier.width(8.dp))
+
+            ExposedDropdownMenuBox(
+                expanded = false,
+                onExpandedChange = { }
+            ) {
+                OutlinedTextField(
+                    value = categoria,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Categoría", color = GrayText) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
+                    modifier = Modifier.menuAnchor(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = BlackCard,
+                        unfocusedContainerColor = BlackCard,
+                        focusedBorderColor = Color.White,
+                        unfocusedBorderColor = GrayOutline,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedLabelColor = GrayText,
+                        unfocusedLabelColor = GrayText,
+                    )
+                )
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(260.dp),
+            columns = GridCells.Adaptive(160.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .background(BlackBg)
         ) {
-            items(pageItems, key = { it.id }) { post ->
+            items(BLOGS) { blog ->
                 ElevatedCard(
-                    colors = CardDefaults.elevatedCardColors(containerColor = BlackCard),
-                    modifier = Modifier.fillMaxWidth()
+                    colors = CardDefaults.elevatedCardColors(containerColor = BlackCard)
                 ) {
                     Column {
                         AsyncImage(
-                            model = post.imagen,
-                            contentDescription = post.titulo,
-                            contentScale = ContentScale.Crop,
+                            model = blog.imagen,
+                            contentDescription = blog.titulo,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(140.dp)
+                                .height(120.dp),
+                            contentScale = ContentScale.Crop
                         )
-                        Column(Modifier.padding(12.dp)) {
-                            Text(post.titulo, color = Color.White, style = MaterialTheme.typography.titleMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                            Spacer(Modifier.height(4.dp))
-                            Text("${post.fecha} • ${post.categoria}",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = GrayText
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(
+                                text = blog.titulo,
+                                style = MaterialTheme.typography.titleSmall,
+                                color = Color.White,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
-                            Spacer(Modifier.height(8.dp))
-                            Text(post.extracto, color = Color.White, style = MaterialTheme.typography.bodyMedium, maxLines = 3, overflow = TextOverflow.Ellipsis)
-                            Spacer(Modifier.height(8.dp))
-                            Text("Leer más (pronto)", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                text = blog.extracto,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = GrayText,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
                         }
                     }
                 }
             }
         }
-
-        // Paginación
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-                .background(BlackBg),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedButton(
-                onClick = { if (page > 1) page-- },
-                enabled = page > 1,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
-            ) { Text("Anterior") }
-
-            Text(
-                "   $page / ${maxOf(totalPages, 1)}   ",
-                style = MaterialTheme.typography.bodyMedium,
-                color = GrayText
-            )
-
-            OutlinedButton(
-                onClick = { if (page < totalPages) page++ },
-                enabled = page < totalPages,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
-            ) { Text("Siguiente") }
-        }
     }
 }
 
-// ===== About preview (NEGRO) =====
+// ===== Sección “Sobre el blog” =====
 @Composable
 private fun AboutPreviewSection() {
-    Divider(Modifier
-        .padding(vertical = 16.dp)
-        .background(BlackBg), color = Color(0xFF1F2937))
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(BlackBg)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(16.dp)
     ) {
-        Column(Modifier.weight(1f)) {
-            Text("Stuffies - Moda Urbana Chilena", color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(6.dp))
+        Text(
+            text = "¿Qué encontrarás en el blog de Stuffies?",
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.White
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = "Historias, lanzamientos, inspiración de looks y contenido detrás de cámaras de la marca. " +
+                    "Queremos que vistas distinto, pero también que entiendas las ideas y procesos detrás de cada colección.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = GrayText
+        )
+        Spacer(Modifier.height(12.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
-                "Desde nuestro lanzamiento en junio de 2024, nos dedicamos a crear ropa moderna y de calidad con estilo estadounidense para que todos puedan vestir a la última moda.",
-                color = GrayText,
-                style = MaterialTheme.typography.bodyMedium
+                text = "Nuevas entradas cada mes.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = GrayText
             )
+            ElevatedCard(
+                colors = CardDefaults.elevatedCardColors(containerColor = BlackCard)
+            ) {
+                AsyncImage(
+                    model = "https://i.postimg.cc/R0phZ77L/ESTRELLA-BLANCA.png",
+                    contentDescription = "Estrella Stuffies",
+                    modifier = Modifier.size(96.dp)
+                )
+            }
         }
-        Spacer(Modifier.width(12.dp))
-        ElevatedCard(colors = CardDefaults.elevatedCardColors(containerColor = BlackCard)) {
-            AsyncImage(
-                model = "https://i.postimg.cc/R0phZ77L/ESTRELLA-BLANCA.png",
-                contentDescription = "Estrella Stuffies",
-                modifier = Modifier.size(96.dp)
-            )
-        }
+        Spacer(Modifier.height(12.dp))
     }
-    Spacer(Modifier.height(12.dp))
 }
