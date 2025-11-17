@@ -9,7 +9,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.example.stuffies_proyect_grupo_6.ui.screens.*
+import com.example.stuffies_proyect_grupo_6.ui.screens.AnimacionScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.BlogsScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.CarritoScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.ContactoScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.HomeScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.LoginScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.MapaScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.NosotrosScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.ProductoDetalleScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.ProductosScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.ProfileScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.RegistroScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.ResumenScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.SettingsScreen
 import com.example.stuffies_proyect_grupo_6.viewmodel.UsuarioViewModel
 
 @Composable
@@ -18,7 +31,7 @@ fun AppNavGraph(navController: NavHostController) {
         navController = navController,
         startDestination = Route.Home.path
     ) {
-        // HOME
+        // ===================== HOME =====================
         composable(Route.Home.path) {
             HomeScreen(
                 onIrProductos = { navController.navigate(Route.Productos.path) },
@@ -30,19 +43,22 @@ fun AppNavGraph(navController: NavHostController) {
                 onIrLogin     = { navController.navigate(Route.Login.path) },
                 onIrPerfil    = { navController.navigate(Route.Perfil.path) },
                 onIrRegistro  = { navController.navigate(Route.Registro.path) },
-                onIrMapa      = { navController.navigate(Route.Mapa.path) }   // 👈 añadido
+                onIrMapa      = { navController.navigate(Route.Mapa.path) }
             )
         }
 
-        // PANTALLAS PRINCIPALES
+        // ========== PANTALLAS PRINCIPALES ==========
         composable(Route.Productos.path) {
             ProductosScreen(
                 onVerDetalle = { id ->
                     navController.navigate(Route.ProductoDetalle.create(id))
                 },
-                onAgregar = { _ -> /* opcional */ }
+                onAgregar = { _ ->
+                    // lógica opcional al agregar al carrito
+                }
             )
         }
+
         composable(Route.Blogs.path)     { BlogsScreen() }
         composable(Route.Nosotros.path)  { NosotrosScreen() }
         composable(Route.Animacion.path) { AnimacionScreen() }
@@ -51,45 +67,56 @@ fun AppNavGraph(navController: NavHostController) {
         composable(Route.Login.path)     { LoginScreen() }
         composable(Route.Perfil.path)    { ProfileScreen() }
 
-        // MAPA (nueva pantalla)
+        // ========== MAPA ==========
         composable(Route.Mapa.path) {
-            MapaScreen(onBack = { navController.popBackStack() })
+            MapaScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
 
-        // SETTINGS
-        composable(Route.Settings.path) { SettingsScreen() }
+        // ========== SETTINGS ==========
+        composable(Route.Settings.path) {
+            SettingsScreen()
+        }
 
-        // ===== SUB-GRAPH de registro =====
+        // ========== SUB-GRAPH REGISTRO ==========
         navigation(
             route = "registro_graph",
             startDestination = Route.Registro.path
         ) {
+            // Pantalla de registro
             composable(Route.Registro.path) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry("registro_graph")
                 }
                 val vm: UsuarioViewModel = viewModel(parentEntry)
+
                 RegistroScreen(
                     navController = navController,
                     viewModel     = vm
                 )
             }
+
+            // Pantalla de resumen (con botones Back / Home)
             composable(Route.Resumen.path) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry("registro_graph")
                 }
                 val vm: UsuarioViewModel = viewModel(parentEntry)
+
                 ResumenScreen(
-                    vm     = vm,
-                    onBack = { navController.popBackStack() }
+                    navController = navController,
+                    vm = vm
                 )
             }
         }
 
-        // DETALLE CON ARGUMENTO
+        // ========== DETALLE PRODUCTO CON ARGUMENTO ==========
         composable(
             route = Route.ProductoDetalle.path,
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            arguments = listOf(
+                navArgument("id") { type = NavType.IntType }
+            )
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id") ?: 0
             ProductoDetalleScreen(id = id)
