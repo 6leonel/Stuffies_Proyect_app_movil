@@ -70,6 +70,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3:1.3.0")
     implementation("androidx.compose.material3:material3-window-size-class:1.3.0") // ⬅️ NUEVA
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
 
     // Navegación Compose

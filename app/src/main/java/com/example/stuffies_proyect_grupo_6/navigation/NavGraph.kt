@@ -17,6 +17,7 @@ import com.example.stuffies_proyect_grupo_6.ui.screens.HomeScreen
 import com.example.stuffies_proyect_grupo_6.ui.screens.LoginScreen
 import com.example.stuffies_proyect_grupo_6.ui.screens.MapaScreen
 import com.example.stuffies_proyect_grupo_6.ui.screens.NosotrosScreen
+import com.example.stuffies_proyect_grupo_6.ui.screens.PostsScreen
 import com.example.stuffies_proyect_grupo_6.ui.screens.ProductoDetalleScreen
 import com.example.stuffies_proyect_grupo_6.ui.screens.ProductosScreen
 import com.example.stuffies_proyect_grupo_6.ui.screens.ProfileScreen
@@ -24,6 +25,7 @@ import com.example.stuffies_proyect_grupo_6.ui.screens.RegistroScreen
 import com.example.stuffies_proyect_grupo_6.ui.screens.ResumenScreen
 import com.example.stuffies_proyect_grupo_6.ui.screens.SettingsScreen
 import com.example.stuffies_proyect_grupo_6.viewmodel.UsuarioViewModel
+import com.example.stuffies_proyect_grupo_6.data.model.Post
 
 @Composable
 fun AppNavGraph(navController: NavHostController) {
@@ -43,7 +45,9 @@ fun AppNavGraph(navController: NavHostController) {
                 onIrLogin     = { navController.navigate(Route.Login.path) },
                 onIrPerfil    = { navController.navigate(Route.Perfil.path) },
                 onIrRegistro  = { navController.navigate(Route.Registro.path) },
-                onIrMapa      = { navController.navigate(Route.Mapa.path) }
+                onIrMapa      = { navController.navigate(Route.Mapa.path) },
+                onIrPosts = { navController.navigate(Route.Posts.path) }
+
             )
         }
 
@@ -121,5 +125,12 @@ fun AppNavGraph(navController: NavHostController) {
             val id = backStackEntry.arguments?.getInt("id") ?: 0
             ProductoDetalleScreen(id = id)
         }
+
+        composable(Route.Posts.path) {
+            PostsScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
     }
 }

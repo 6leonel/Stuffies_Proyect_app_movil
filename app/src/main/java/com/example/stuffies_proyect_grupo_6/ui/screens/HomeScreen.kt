@@ -45,7 +45,9 @@ fun HomeScreen(
     onIrLogin: () -> Unit,
     onIrPerfil: () -> Unit,
     onIrRegistro: () -> Unit,
-    onIrMapa: () -> Unit            // 👈 NUEVO: navegación al mapa
+    onIrMapa: () -> Unit // 👈 NUEVO: navegación al mapa
+    ,
+    onIrPosts: () -> Unit
 ) {
     val fondo = Brush.verticalGradient(
         colorStops = arrayOf(0f to Color.Black, 1f to Color.Black)
@@ -67,11 +69,11 @@ fun HomeScreen(
             onIrLogin = onIrLogin,
             onIrPerfil = onIrPerfil,
             onIrRegistro = onIrRegistro,
-            onIrMapa = onIrMapa        // 👈 NUEVO
+            onIrMapa = onIrMapa,
+            onIrPosts = onIrPosts
         )
 
         Spacer(Modifier.height(8.dp))
-
         HeroSection(onIrProductos = onIrProductos)
 
         Spacer(Modifier.height(16.dp))
@@ -99,7 +101,8 @@ private fun HomeHeader(
     onIrLogin: () -> Unit,
     onIrPerfil: () -> Unit,
     onIrRegistro: () -> Unit = {},
-    onIrMapa: () -> Unit             // 👈 NUEVO
+    onIrMapa: () -> Unit,
+    onIrPosts: () -> Unit
 ) {
     val context = LocalContext.current
     val imageLoader = remember {
@@ -157,6 +160,9 @@ private fun HomeHeader(
 
                     TextButton(onClick = onIrLogin)     { Text("Inicio sesión", color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrRegistro)  { Text("Registro",  color = Color(0xFFB9B9D6)) }
+                    Button(onClick = onIrPosts) {
+                        Text("Ver Posts API")
+                    }
 
                     // Carrito (n)
                     TextButton(onClick = onIrCarrito) {
@@ -164,6 +170,8 @@ private fun HomeHeader(
                             text = if (cartCount > 0) "Carrito ($cartCount)" else "Carrito",
                             color = Color(0xFFB9B9D6)
                         )
+
+
                     }
                 }
 
