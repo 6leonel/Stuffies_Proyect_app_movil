@@ -18,7 +18,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="Stuffies"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true">
 
         <!-- API key de Google Maps (recomendado referenciar desde strings.xml) -->
         <meta-data
