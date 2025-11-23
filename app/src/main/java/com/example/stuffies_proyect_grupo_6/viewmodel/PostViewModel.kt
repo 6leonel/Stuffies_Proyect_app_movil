@@ -18,11 +18,20 @@ class PostViewModel : ViewModel() {
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
+    // ⬇️ NUEVO: estado de error para mostrarlo en UI si falla la API
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
     fun cargarPosts() {
         viewModelScope.launch {
             _loading.value = true
+            _error.value = null
             try {
                 _posts.value = repo.getPosts()
+            } catch (e: Exception) {
+                // Evita que la app se caiga si la API falla
+                _posts.value = emptyList()
+                _error.value = e.message ?: "Error al cargar productos desde el microservicio."
             } finally {
                 _loading.value = false
             }
