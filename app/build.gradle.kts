@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.stuffies_proyect_grupo_6"
-        minSdk = 24
+        minSdk = 21              // 👈 ANTES 24, AHORA 21 (Android 5.0+)
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -73,7 +73,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-
 
     // Navegación Compose
     implementation("androidx.navigation:navigation-compose:2.8.3")
