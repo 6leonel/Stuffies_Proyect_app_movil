@@ -2,12 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.stuffies_proyect_grupo_6">
 
-    <!-- Permisos -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- El GPS NO es estrictamente requerido (la app corre sin él) -->
     <uses-feature
         android:name="android.hardware.location.gps"
         android:required="false" />
@@ -16,13 +14,13 @@
         android:name=".StuffiesApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Stuffies"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.Stuffies_Proyect_grupo_6">
+        android:theme="@style/Theme.Stuffies_Proyect_grupo_6"
+        android:label="@string/app_name">
+        <!--             ↑↑↑ usamos string, no texto fijo -->
 
-        <!-- API key de Google Maps (recomendado referenciar desde strings.xml) -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
