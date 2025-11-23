@@ -22,12 +22,15 @@ private val GrayLine  = Color(0xFF1F2937)
 @Composable
 fun LoginScreen() {
     val snackbar = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()         // ✅ scope aquí
+    val scope = rememberCoroutineScope()
 
     var id by remember { mutableStateOf("") }    // usuario o correo
     var pass by remember { mutableStateOf("") }
     var rememberMe by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
+
+    // 👇 NUEVO: usuario logeado
+    var loggedInUser by remember { mutableStateOf<String?>(null) }
 
     fun validate(): String? {
         if (id.isBlank()) return "Ingresa tu usuario o correo."
@@ -45,8 +48,12 @@ fun LoginScreen() {
         // Simulación de login
         delay(300)
         isLoading = false
+
+        // 👇 Guardamos quién inició sesión
+        loggedInUser = id
+
         snackbar.showSnackbar("¡Inicio de sesión correcto!", withDismissAction = true)
-        // TODO: navegar si quieres (pasa NavController a este composable y navega aquí)
+        // Aquí podrías navegar si luego le pasas un NavController
     }
 
     Scaffold(
@@ -149,7 +156,7 @@ fun LoginScreen() {
             Spacer(Modifier.height(8.dp))
 
             Button(
-                onClick = { scope.launch { doLogin() } },   // ✅ usar scope.launch
+                onClick = { scope.launch { doLogin() } },
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -183,7 +190,43 @@ fun LoginScreen() {
                     color = GrayText
                 )
             }
+
             Spacer(Modifier.height(20.dp))
+
+            // 👇 Apartado de usuario después del inicio de sesión
+            loggedInUser?.let { username ->
+                Spacer(Modifier.height(12.dp))
+                UserInfoCard(username = username)
+            }
+        }
+    }
+}
+
+@Composable
+fun UserInfoCard(username: String) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = GrayLine
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Usuario conectado",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "Nombre de usuario: $username",
+                style = MaterialTheme.typography.bodyMedium,
+                color = GrayText
+            )
         }
     }
 }

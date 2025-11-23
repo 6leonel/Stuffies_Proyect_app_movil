@@ -13,13 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.stuffies_proyect_grupo_6.navigation.Route
 import com.example.stuffies_proyect_grupo_6.viewmodel.UsuarioViewModel
 import kotlinx.coroutines.launch
-import androidx.compose.ui.text.input.VisualTransformation
-
 
 private val BlackBg   = Color(0xFF000000)
 private val GrayText  = Color(0xFFBFBFBF)
@@ -78,20 +77,28 @@ fun RegistroScreen(
 
     // ---- Guardar / Continuar ----
     fun onCrearCuenta() = scope.launch {
+        // 1) Validación local (RUN, confirmación de pass, rol, etc.)
         if (!validar()) return@launch
+
         creating = true
 
-        // Si tu VM tiene setters, puedes des-comentar y alinear nombres:
-        // runCatching { viewModel.updateRun(run) }
-        // runCatching { viewModel.updateNombre(nombre) }
-        // runCatching { viewModel.updateApellidos(apellidos) }
-        // runCatching { viewModel.updateEmail(email) }
-        // runCatching { viewModel.updateUsuario(user) }
-        // runCatching { viewModel.updatePassword(pass) }
-        // runCatching { viewModel.updateDireccion(address) }
-        // runCatching { viewModel.updateRol(role) }
+        // 2) Sincronizar con el ViewModel para usar la lógica y pruebas unitarias
+        viewModel.onNombreChange(nombre)
+        viewModel.onCorreoChange(email)
+        viewModel.onClaveChange(pass)
+        viewModel.onDireccionChange(address)
+        // aquí asumimos que al crear usuario acepta términos
+        viewModel.onAceptaTerminosChange(true)
 
-        // Simulación de “guardar” breve
+        // 3) Validar con el ViewModel
+        val esValidoVm = viewModel.validarFormulario()
+        if (!esValidoVm) {
+            creating = false
+            err("Revisa los datos del formulario.")
+            return@launch
+        }
+
+        // 4) Si todo OK, seguimos
         kotlinx.coroutines.delay(250)
         creating = false
         okMsg = true
@@ -142,19 +149,28 @@ fun RegistroScreen(
                     // Fila 1: RUN / Nombre / Apellidos
                     Row(Modifier.fillMaxWidth()) {
                         OutlinedFieldWhite(
-                            value = run, onValueChange = { if (it.length <= 9) run = it.filter { c -> c.isDigit() } },
+                            value = run,
+                            onValueChange = { if (it.length <= 9) run = it.filter { c -> c.isDigit() } },
                             label = "RUN (sin puntos ni guion)",
-                            modifier = Modifier.weight(1f).padding(end = 8.dp)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
                         )
                         OutlinedFieldWhite(
-                            value = nombre, onValueChange = { if (it.length <= 50) nombre = it },
+                            value = nombre,
+                            onValueChange = { if (it.length <= 50) nombre = it },
                             label = "Nombre",
-                            modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 4.dp)
                         )
                         OutlinedFieldWhite(
-                            value = apellidos, onValueChange = { if (it.length <= 100) apellidos = it },
+                            value = apellidos,
+                            onValueChange = { if (it.length <= 100) apellidos = it },
                             label = "Apellidos",
-                            modifier = Modifier.weight(1f).padding(start = 8.dp)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp)
                         )
                     }
 
@@ -163,14 +179,20 @@ fun RegistroScreen(
                     // Fila 2: Correo / Usuario
                     Row(Modifier.fillMaxWidth()) {
                         OutlinedFieldWhite(
-                            value = email, onValueChange = { if (it.length <= 100) email = it },
+                            value = email,
+                            onValueChange = { if (it.length <= 100) email = it },
                             label = "Correo",
-                            modifier = Modifier.weight(1f).padding(end = 8.dp)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
                         )
                         OutlinedFieldWhite(
-                            value = user, onValueChange = { if (it.length <= 30) user = it },
+                            value = user,
+                            onValueChange = { if (it.length <= 30) user = it },
                             label = "Usuario",
-                            modifier = Modifier.weight(1f).padding(start = 8.dp)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp)
                         )
                     }
 
@@ -179,16 +201,22 @@ fun RegistroScreen(
                     // Fila 3: Pass / Pass2
                     Row(Modifier.fillMaxWidth()) {
                         OutlinedFieldWhite(
-                            value = pass, onValueChange = { if (it.length <= 10) pass = it },
+                            value = pass,
+                            onValueChange = { if (it.length <= 10) pass = it },
                             label = "Contraseña (4–10)",
                             isPassword = true,
-                            modifier = Modifier.weight(1f).padding(end = 8.dp)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
                         )
                         OutlinedFieldWhite(
-                            value = pass2, onValueChange = { if (it.length <= 10) pass2 = it },
+                            value = pass2,
+                            onValueChange = { if (it.length <= 10) pass2 = it },
                             label = "Repite la contraseña",
                             isPassword = true,
-                            modifier = Modifier.weight(1f).padding(start = 8.dp)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp)
                         )
                     }
 
@@ -197,16 +225,21 @@ fun RegistroScreen(
                     // Fila 4: Dirección / Rol
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         OutlinedFieldWhite(
-                            value = address, onValueChange = { if (it.length <= 300) address = it },
+                            value = address,
+                            onValueChange = { if (it.length <= 300) address = it },
                             label = "Dirección",
-                            modifier = Modifier.weight(1f).padding(end = 8.dp)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
                         )
 
                         // Dropdown Rol (en blanco)
                         ExposedDropdownMenuBox(
                             expanded = roleMenu,
                             onExpandedChange = { roleMenu = !roleMenu },
-                            modifier = Modifier.weight(1f).padding(start = 8.dp)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp)
                         ) {
                             OutlinedTextField(
                                 readOnly = true,
@@ -214,7 +247,9 @@ fun RegistroScreen(
                                 onValueChange = {},
                                 label = { Text("Tipo de usuario") },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = roleMenu) },
-                                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .fillMaxWidth(),
                                 colors = textFieldColorsWhite()
                             )
                             ExposedDropdownMenu(
@@ -251,7 +286,10 @@ fun RegistroScreen(
 
                     if (okMsg) {
                         Spacer(Modifier.height(12.dp))
-                        Text("¡Cuenta creada! Revisarás un resumen ahora…", color = Color(0xFF22A06B))
+                        Text(
+                            "¡Cuenta creada! Revisarás un resumen ahora…",
+                            color = Color(0xFF22A06B)
+                        )
                     }
                 }
             }

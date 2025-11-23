@@ -19,14 +19,13 @@
         android:label="Stuffies"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.Stuffies_Proyect_grupo_6">
 
         <!-- API key de Google Maps (recomendado referenciar desde strings.xml) -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
-
 
         <activity
             android:name=".MainActivity"
