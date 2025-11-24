@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,6 +26,7 @@ fun PostsScreen(
     val vm: PostViewModel = viewModel()
     val posts by vm.posts.collectAsState()
     val loading by vm.loading.collectAsState()
+    val error by vm.error.collectAsState()   // 👈 nuevo
 
     LaunchedEffect(Unit) {
         vm.cargarPosts()
@@ -51,18 +53,34 @@ fun PostsScreen(
                 loading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = androidx.compose.ui.Alignment.Center
+                        contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator()
+                    }
+                }
+
+                error != null -> {   // 👈 mostramos error de la API
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No se pudieron cargar los productos desde el microservicio.\n" +
+                                    "Revisa que el backend Spring Boot esté levantado en el puerto 8080.",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
                 }
 
                 posts.isEmpty() -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = androidx.compose.ui.Alignment.Center
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text("Sin datos. ¿Está levantado el microservicio?")
+                        Text(
+                            text = "No hay productos disponibles en este momento.",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
                 }
 
@@ -90,12 +108,10 @@ fun PostsScreen(
                                         text = "Precio: ${p.precio}",
                                         style = MaterialTheme.typography.bodyMedium
                                     )
-                                    if (!p.descripcion.isNullOrBlank()) {
-                                        Text(
-                                            text = p.descripcion!!,
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
-                                    }
+                                    Text(
+                                        text = p.descripcion,
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
                                 }
                             }
                         }

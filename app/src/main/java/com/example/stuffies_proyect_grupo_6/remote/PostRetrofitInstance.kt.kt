@@ -6,21 +6,20 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object PostRetrofitInstance {
 
-    // 🟣 OPCIÓN 1: cuando pruebas en EMULADOR en el mismo PC
-    // (microservicio Spring Boot corriendo en ese PC)
+    // 🟣 EMULADOR (Android Studio en el mismo PC que el backend)
     private const val BASE_URL_EMULADOR = "http://10.0.2.2:8080/"
 
-    // 🟢 OPCIÓN 2: cuando pruebas en CELULAR REAL conectado a la misma red
-    // 10.199.5.213 es la IP del PC de la U donde corre el backend
-    private const val BASE_URL_WIFI = "http://10.199.5.213:8080/"
+    // 🟢 CELULAR REAL en la misma red que el PC de la U
+    // 10.199.5.213 es la IP que me dijiste
+    private const val BASE_URL_CELULAR = "http://10.199.5.213:8080/"
 
-    // 👇 Elige cuál usar comentando/descomentando:
+    // 👉 Elige UNA según dónde vas a probar:
 
-    // Para probar en EMULADOR (Android Studio en el PC):
+    // Para emulador:
     private const val BASE_URL = BASE_URL_EMULADOR
 
-    // Para generar APK y probar en CELULAR REAL, usa esta línea en vez de la de arriba:
-    // private const val BASE_URL = BASE_URL_WIFI
+    // Para celular real (cuando generes APK), cambia a:
+    // private const val BASE_URL = BASE_URL_CELULAR
 
     val api: PostApiService by lazy {
         Retrofit.Builder()

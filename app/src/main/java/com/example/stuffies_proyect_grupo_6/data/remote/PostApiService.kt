@@ -6,11 +6,15 @@ import retrofit2.http.GET
 /**
  * Servicio Retrofit para consumir el microservicio Spring Boot.
  *
- * Ajusta el path del @GET según tu backend
- * (por ejemplo "posts", "productos", "api/productos", etc.).
+ * IMPORTANTE:
+ * Cambia el path del @GET para que coincida con tu backend.
+ * Si en el navegador pruebas con:
+ *   http://localhost:8080/api/productos
+ * usa @GET("api/productos")
  */
 interface PostApiService {
 
-    @GET("posts")   // 🔧 CAMBIA SOLO ESTE STRING SI TU ENDPOINT ES OTRO
+    // ⬇️ Ajusta este path según tu controlador Spring Boot
+    @GET("api/productos")
     suspend fun getPosts(): List<Post>
 }

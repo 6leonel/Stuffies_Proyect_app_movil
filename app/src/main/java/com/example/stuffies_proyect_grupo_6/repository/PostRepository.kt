@@ -12,7 +12,6 @@ class PostRepository {
     private val api: PostApiService = PostRetrofitInstance.api
 
     suspend fun getPosts(): List<Post> {
-        // Llama al método definido en PostApiService
         return api.getPosts()
     }
 }
