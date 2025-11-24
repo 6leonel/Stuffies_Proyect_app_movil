@@ -45,9 +45,8 @@ fun HomeScreen(
     onIrLogin: () -> Unit,
     onIrPerfil: () -> Unit,
     onIrRegistro: () -> Unit,
-    onIrMapa: () -> Unit // 👈 NUEVO: navegación al mapa
-    ,
-    onIrPosts: () -> Unit
+    onIrMapa: () -> Unit,
+    onIrPosts: () -> Unit      // 👈 navegación a Productos (microservicio)
 ) {
     val fondo = Brush.verticalGradient(
         colorStops = arrayOf(0f to Color.Black, 1f to Color.Black)
@@ -102,7 +101,7 @@ private fun HomeHeader(
     onIrPerfil: () -> Unit,
     onIrRegistro: () -> Unit = {},
     onIrMapa: () -> Unit,
-    onIrPosts: () -> Unit
+    onIrPosts: () -> Unit      // 👈 callback que viene del NavGraph
 ) {
     val context = LocalContext.current
     val imageLoader = remember {
@@ -139,7 +138,12 @@ private fun HomeHeader(
                     contentScale = ContentScale.Crop
                 )
                 Spacer(Modifier.width(10.dp))
-                Text("STUFFIES", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(
+                    "STUFFIES",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
             }
 
             // Nav + cuenta
@@ -154,12 +158,11 @@ private fun HomeHeader(
                     TextButton(onClick = onIrNosotros)  { Text("Nosotros",  color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrAnimacion) { Text("Animación", color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrContacto)  { Text("Contacto",  color = Color(0xFFB9B9D6)) }
-
-                    // 👇 NUEVO botón Mapa
                     TextButton(onClick = onIrMapa)      { Text("Mapa",      color = Color(0xFFB9B9D6)) }
-
                     TextButton(onClick = onIrLogin)     { Text("Inicio sesión", color = Color(0xFFB9B9D6)) }
                     TextButton(onClick = onIrRegistro)  { Text("Registro",  color = Color(0xFFB9B9D6)) }
+
+                    // 👇 Botón que abre PostsScreen (microservicio)
                     Button(onClick = onIrPosts) {
                         Text("Ver Posts API")
                     }
@@ -170,8 +173,6 @@ private fun HomeHeader(
                             text = if (cartCount > 0) "Carrito ($cartCount)" else "Carrito",
                             color = Color(0xFFB9B9D6)
                         )
-
-
                     }
                 }
 

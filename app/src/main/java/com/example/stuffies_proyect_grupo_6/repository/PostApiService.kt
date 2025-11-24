@@ -6,10 +6,11 @@ import retrofit2.http.GET
 /**
  * Servicio Retrofit para consumir el microservicio de Spring Boot.
  *
- * GET http://10.0.2.2:8080/api/productos
+ * La URL completa que llamará el emulador es:
+ *   http://10.0.2.2:8080/api/productos
  */
 interface PostApiService {
 
     @GET("api/productos")
-    suspend fun getProductos(): List<Post>
+    suspend fun getPosts(): List<Post>
 }

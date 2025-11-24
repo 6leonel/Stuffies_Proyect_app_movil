@@ -48,6 +48,7 @@ fun AppNavGraph(navController: NavHostController) {
                 onIrPerfil    = { navController.navigate(Route.Perfil.path) },
                 onIrRegistro  = { navController.navigate(Route.Registro.path) },
                 onIrMapa      = { navController.navigate(Route.Mapa.path) },
+                // 👇 Este callback abre la pantalla del microservicio
                 onIrPosts     = { navController.navigate(Route.Posts.path) }
             )
         }
