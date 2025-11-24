@@ -5,6 +5,7 @@ package com.example.stuffies_proyect_grupo_6.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -14,10 +15,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.stuffies_proyect_grupo_6.viewmodel.PostViewModel
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun PostsScreen(
@@ -62,7 +68,7 @@ fun PostsScreen(
                 posts.isNotEmpty() -> {
                     Column(modifier = Modifier.fillMaxSize()) {
 
-                        // 🔧 AQUÍ EL CAMBIO: usamos let para evitar el smart cast
+                        // Mensaje si estamos usando catálogo local
                         error?.let { msg ->
                             Text(
                                 text = msg,
@@ -77,29 +83,57 @@ fun PostsScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(posts) { p ->
                                 Card(
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth(),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                    shape = RoundedCornerShape(16.dp)
                                 ) {
-                                    Column(modifier = Modifier.padding(12.dp)) {
-                                        Text(
-                                            text = p.nombre,
-                                            style = MaterialTheme.typography.titleMedium
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        // Imagen del producto
+                                        AsyncImage(
+                                            model = p.imagen,
+                                            contentDescription = p.nombre,
+                                            modifier = Modifier
+                                                .size(80.dp)
+                                                .clip(RoundedCornerShape(12.dp)),
+                                            contentScale = ContentScale.Crop
                                         )
-                                        Text(
-                                            text = "Categoría: ${p.categoria}",
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                        Text(
-                                            text = "Precio: ${p.precio}",
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                        Text(
-                                            text = p.descripcion,
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
+
+                                        Spacer(modifier = Modifier.width(12.dp))
+
+                                        Column(
+                                            modifier = Modifier.weight(1f)
+                                        ) {
+                                            Text(
+                                                text = p.nombre,
+                                                style = MaterialTheme.typography.titleMedium
+                                            )
+                                            Text(
+                                                text = "Categoría: ${p.categoria}",
+                                                style = MaterialTheme.typography.labelSmall
+                                            )
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Text(
+                                                text = "Precio: ${formatCLP(p.precio)}",
+                                                style = MaterialTheme.typography.bodyMedium
+                                            )
+                                            if (p.descripcion.isNotBlank()) {
+                                                Spacer(modifier = Modifier.height(4.dp))
+                                                Text(
+                                                    text = p.descripcion,
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    maxLines = 2
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -135,4 +169,12 @@ fun PostsScreen(
             }
         }
     }
+}
+
+/**
+ * Formatea el precio como CLP, ejemplo: 39990 -> $39.990
+ */
+private fun formatCLP(precio: Number): String {
+    val nf = NumberFormat.getInstance(Locale("es", "CL"))
+    return "$" + nf.format(precio.toLong())
 }
