@@ -32,7 +32,7 @@ fun PostsScreen(
     val vm: PostViewModel = viewModel()
     val posts by vm.posts.collectAsState()
     val loading by vm.loading.collectAsState()
-    val error by vm.error.collectAsState()   // String?
+    val error by vm.error.collectAsState()   // lo seguimos usando sólo para la pantalla de error
 
     LaunchedEffect(Unit) {
         vm.cargarPosts()
@@ -66,73 +66,60 @@ fun PostsScreen(
                 }
 
                 posts.isNotEmpty() -> {
-                    Column(modifier = Modifier.fillMaxSize()) {
-
-                        // Mensaje si estamos usando catálogo local
-                        error?.let { msg ->
-                            Text(
-                                text = msg,
-                                style = MaterialTheme.typography.labelMedium,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                            )
-                        }
-
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            items(posts) { p ->
-                                Card(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                                    shape = RoundedCornerShape(16.dp)
+                    // ✅ Hay productos (sea de la API o del catálogo local)
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(posts) { p ->
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                shape = RoundedCornerShape(16.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Row(
+                                    // Imagen del producto
+                                    AsyncImage(
+                                        model = p.imagen,
+                                        contentDescription = p.nombre,
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(12.dp),
-                                        verticalAlignment = Alignment.CenterVertically
+                                            .size(80.dp)
+                                            .clip(RoundedCornerShape(12.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+
+                                    Spacer(modifier = Modifier.width(12.dp))
+
+                                    Column(
+                                        modifier = Modifier.weight(1f)
                                     ) {
-                                        // Imagen del producto
-                                        AsyncImage(
-                                            model = p.imagen,
-                                            contentDescription = p.nombre,
-                                            modifier = Modifier
-                                                .size(80.dp)
-                                                .clip(RoundedCornerShape(12.dp)),
-                                            contentScale = ContentScale.Crop
+                                        Text(
+                                            text = p.nombre,
+                                            style = MaterialTheme.typography.titleMedium
                                         )
-
-                                        Spacer(modifier = Modifier.width(12.dp))
-
-                                        Column(
-                                            modifier = Modifier.weight(1f)
-                                        ) {
-                                            Text(
-                                                text = p.nombre,
-                                                style = MaterialTheme.typography.titleMedium
-                                            )
-                                            Text(
-                                                text = "Categoría: ${p.categoria}",
-                                                style = MaterialTheme.typography.labelSmall
-                                            )
+                                        Text(
+                                            text = "Categoría: ${p.categoria}",
+                                            style = MaterialTheme.typography.labelSmall
+                                        )
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = "Precio: ${formatCLP(p.precio)}",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        if (p.descripcion.isNotBlank()) {
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Text(
-                                                text = "Precio: ${formatCLP(p.precio)}",
-                                                style = MaterialTheme.typography.bodyMedium
+                                                text = p.descripcion,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                maxLines = 2
                                             )
-                                            if (p.descripcion.isNotBlank()) {
-                                                Spacer(modifier = Modifier.height(4.dp))
-                                                Text(
-                                                    text = p.descripcion,
-                                                    style = MaterialTheme.typography.bodySmall,
-                                                    maxLines = 2
-                                                )
-                                            }
                                         }
                                     }
                                 }
@@ -141,8 +128,8 @@ fun PostsScreen(
                     }
                 }
 
+                // Sólo se muestra si NO hay productos y además hubo error
                 error != null -> {
-                    // No hay productos y hubo error
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
