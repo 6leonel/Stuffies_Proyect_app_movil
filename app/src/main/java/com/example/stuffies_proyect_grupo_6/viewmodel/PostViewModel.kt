@@ -18,7 +18,7 @@ class PostViewModel : ViewModel() {
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
-    // ⬇️ NUEVO: estado de error para mostrarlo en UI si falla la API
+    // estado de error para mostrar un mensaje si falla la API
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
@@ -27,11 +27,12 @@ class PostViewModel : ViewModel() {
             _loading.value = true
             _error.value = null
             try {
+                // Intentamos cargar desde el microservicio
                 _posts.value = repo.getPosts()
             } catch (e: Exception) {
-                // Evita que la app se caiga si la API falla
-                _posts.value = emptyList()
-                _error.value = e.message ?: "Error al cargar productos desde el microservicio."
+                // Si la API falla, usamos el catálogo local
+                _posts.value = repo.getFallbackPosts()
+                _error.value = "Mostrando catálogo local porque el microservicio no respondió."
             } finally {
                 _loading.value = false
             }

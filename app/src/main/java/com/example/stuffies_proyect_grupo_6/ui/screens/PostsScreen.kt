@@ -26,7 +26,7 @@ fun PostsScreen(
     val vm: PostViewModel = viewModel()
     val posts by vm.posts.collectAsState()
     val loading by vm.loading.collectAsState()
-    val error by vm.error.collectAsState()   // 👈 nuevo
+    val error by vm.error.collectAsState()   // String?
 
     LaunchedEffect(Unit) {
         vm.cargarPosts()
@@ -59,7 +59,56 @@ fun PostsScreen(
                     }
                 }
 
-                error != null -> {   // 👈 mostramos error de la API
+                posts.isNotEmpty() -> {
+                    Column(modifier = Modifier.fillMaxSize()) {
+
+                        // 🔧 AQUÍ EL CAMBIO: usamos let para evitar el smart cast
+                        error?.let { msg ->
+                            Text(
+                                text = msg,
+                                style = MaterialTheme.typography.labelMedium,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+                        }
+
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(posts) { p ->
+                                Card(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Column(modifier = Modifier.padding(12.dp)) {
+                                        Text(
+                                            text = p.nombre,
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
+                                        Text(
+                                            text = "Categoría: ${p.categoria}",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Text(
+                                            text = "Precio: ${p.precio}",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Text(
+                                            text = p.descripcion,
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                error != null -> {
+                    // No hay productos y hubo error
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -72,7 +121,7 @@ fun PostsScreen(
                     }
                 }
 
-                posts.isEmpty() -> {
+                else -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -81,40 +130,6 @@ fun PostsScreen(
                             text = "No hay productos disponibles en este momento.",
                             style = MaterialTheme.typography.bodyMedium
                         )
-                    }
-                }
-
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(posts) { p ->
-                            Card(
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Column(modifier = Modifier.padding(12.dp)) {
-                                    Text(
-                                        text = p.nombre,
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                    Text(
-                                        text = "Categoría: ${p.categoria}",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                    Text(
-                                        text = "Precio: ${p.precio}",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                    Text(
-                                        text = p.descripcion,
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                }
-                            }
-                        }
                     }
                 }
             }
