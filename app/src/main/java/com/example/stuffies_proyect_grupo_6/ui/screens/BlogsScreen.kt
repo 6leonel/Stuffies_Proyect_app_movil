@@ -290,6 +290,17 @@ private fun AdviceSection() {
 private fun BlogsListSection() {
     var query by remember { mutableStateOf("") }
     var categoria by remember { mutableStateOf("Todos") }
+    var isCategoriaExpanded by remember { mutableStateOf(false) }
+
+    val categorias = listOf("Todos") + BLOGS.map { it.categoria }.distinct()
+
+    val filteredBlogs = remember(query, categoria) {
+        BLOGS.filter { blog ->
+            val matchesQuery = blog.titulo.contains(query, ignoreCase = true)
+            val matchesCategoria = categoria == "Todos" || blog.categoria == categoria
+            matchesQuery && matchesCategoria
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -323,15 +334,15 @@ private fun BlogsListSection() {
             Spacer(Modifier.width(8.dp))
 
             ExposedDropdownMenuBox(
-                expanded = false,
-                onExpandedChange = { }
+                expanded = isCategoriaExpanded,
+                onExpandedChange = { isCategoriaExpanded = !isCategoriaExpanded }
             ) {
                 OutlinedTextField(
                     value = categoria,
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Categoría", color = GrayText) },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isCategoriaExpanded) },
                     modifier = Modifier.menuAnchor(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = BlackCard,
@@ -344,6 +355,20 @@ private fun BlogsListSection() {
                         unfocusedLabelColor = GrayText,
                     )
                 )
+                ExposedDropdownMenu(
+                    expanded = isCategoriaExpanded,
+                    onDismissRequest = { isCategoriaExpanded = false }
+                ) {
+                    categorias.forEach { cat ->
+                        DropdownMenuItem(
+                            text = { Text(cat) },
+                            onClick = {
+                                categoria = cat
+                                isCategoriaExpanded = false
+                            }
+                        )
+                    }
+                }
             }
         }
 
@@ -357,7 +382,7 @@ private fun BlogsListSection() {
                 .fillMaxWidth()
                 .background(BlackBg)
         ) {
-            items(BLOGS) { blog ->
+            items(filteredBlogs) { blog ->
                 ElevatedCard(
                     colors = CardDefaults.elevatedCardColors(containerColor = BlackCard)
                 ) {
