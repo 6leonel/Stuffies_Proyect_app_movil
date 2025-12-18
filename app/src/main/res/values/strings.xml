@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Stuffies</string>
 
-    <!-- ← Pega aquí tu API key REAL, sin comillas adicionales -->
-    <string name="google_maps_key">AIzaSyB1C2D3E4F5G6H7I8J9K0L1M2N3O4P5Q</string>
+    <string name="google_maps_key">AIzaSyDsuzkTY6Rl26EhwDiVJuvmqLuC804dPZ4</string>
 </resources>
