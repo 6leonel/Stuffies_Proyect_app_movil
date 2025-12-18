@@ -23,7 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
@@ -221,8 +224,15 @@ private fun Bullet(text: String) {
 @Composable
 private fun BulletBold(label: String, value: String) {
     Row(verticalAlignment = Alignment.Top) {
-        Text("• ", color = Color(0xFF111111))
-        Text(label, color = Color.Black, fontWeight = FontWeight.SemiBold)
-        Text(value, color = Color(0xFF111111))
+        Text(
+            text = buildAnnotatedString {
+                append("• ")
+                withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold, color = Color.Black)) {
+                    append(label)
+                }
+                append(value)
+            },
+            color = Color(0xFF111111)
+        )
     }
 }
