@@ -22,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.stuffies_proyect_grupo_6.data.remote.AdviceApi   // ✅ import correcto
 
 // ===== Colores fijos para “negro total” =====
 private val BlackBg = Color(0xFF000000)
@@ -220,25 +219,22 @@ private fun CarouselSection() {
     }
 }
 
-// ===== Sección API externa =====
+// ===== Sección de consejos =====
 @Composable
 private fun AdviceSection() {
-    var adviceText by remember { mutableStateOf<String?>(null) }
-    var isLoading by remember { mutableStateOf(true) }
-    var error by remember { mutableStateOf<String?>(null) }
+    // Lista de consejos predefinidos en español
+    val consejos = listOf(
+        "Viste para ti, no para los demás.",
+        "La confianza es el mejor atuendo. Lúcelo.",
+        "No tengas miedo de experimentar con colores y patrones.",
+        "Un buen par de zapatillas puede cambiar tu día.",
+        "La moda se desvanece, el estilo es eterno.",
+        "Menos es más. A veces, la simplicidad es la clave.",
+        "Los accesorios adecuados pueden transformar cualquier look."
+    )
 
-    LaunchedEffect(Unit) {
-        try {
-            isLoading = true
-            error = null
-            val response = AdviceApi.service.getAdvice()
-            adviceText = response.slip.advice
-        } catch (e: Exception) {
-            error = "No se pudo obtener el tip del día 🤕"
-        } finally {
-            isLoading = false
-        }
-    }
+    // Selecciona un consejo al azar para mostrar
+    val consejoDelDia = remember { consejos.random() }
 
     Column(
         modifier = Modifier
@@ -246,7 +242,7 @@ private fun AdviceSection() {
             .padding(horizontal = 16.dp)
     ) {
         Text(
-            text = "Tip del día (API externa)",
+            text = "Tip del día",
             style = MaterialTheme.typography.titleMedium,
             color = Color.White
         )
@@ -254,36 +250,23 @@ private fun AdviceSection() {
         ElevatedCard(
             colors = CardDefaults.elevatedCardColors(containerColor = BlackCard)
         ) {
-            Box(modifier = Modifier.padding(16.dp)) {
-                when {
-                    isLoading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            strokeWidth = 2.dp
-                        )
-                    }
-
-                    error != null -> {
-                        Text(
-                            text = error ?: "",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = GrayText
-                        )
-                    }
-
-                    adviceText != null -> {
-                        Text(
-                            text = "\"$adviceText\"",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = GrayText
-                        )
-                    }
-                }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "\"$consejoDelDia\"",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = GrayText
+                )
             }
         }
         Spacer(Modifier.height(24.dp))
     }
 }
+
 
 // ===== Lista + filtros =====
 @Composable
